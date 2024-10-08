@@ -1,0 +1,31 @@
+﻿{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "DetailsViewExtension",
+	"Description": "",
+	"Category": "Other",
+	"CreatedBy": "FifonszGames",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "DetailsViewExtension",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "GameplayTagsEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"Enabled": true
+		}
+	]
+}
