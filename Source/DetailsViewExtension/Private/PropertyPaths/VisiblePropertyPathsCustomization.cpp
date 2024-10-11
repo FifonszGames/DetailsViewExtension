@@ -47,7 +47,7 @@ void FVisiblePropertyPathsCustomization::CustomizeChildren(TSharedRef<IPropertyH
 	.ValueContent()
 	[
 		SNew(SBox)
-		.Padding(FMargin(0,2,0,1))
+		.Padding(FMargin(0,2,0,2))
 		[
 			SNew(SVisiblePropertyPathsCombo)
 			.PropertyHandle(InStructPropertyHandle)

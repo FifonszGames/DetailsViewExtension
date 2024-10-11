@@ -9,7 +9,7 @@
 
 void UDetailsViewExtensionLibrary::GetStructValue(const UStructView* InFromView, EOperationResult& OutOperationResult, int32& OutData)
 {
-	// We should never hit this! stubs to avoid NoExport on the class.
+	// We should never hit this!
 	checkNoEntry();
 }
 
@@ -20,7 +20,7 @@ DEFINE_FUNCTION(UDetailsViewExtensionLibrary::execGetStructValue)
 
 void UDetailsViewExtensionLibrary::SetStructValue(const UStructView* InTargetView, EOperationResult& OutOperationResult, const int32& InSourceData)
 {
-	// We should never hit this! stubs to avoid NoExport on the class.
+	// We should never hit this!
 	checkNoEntry();
 }
 

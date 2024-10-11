@@ -2,13 +2,10 @@
 
 #include "PropertyPaths/PropertyPathsPicker.h"
 
-#include "SlateOptMacros.h"
 #include "PropertyPaths/PropertyPathsHelpers.h"
 #include "Widgets/Input/SSearchBox.h"
 
 #define LOCTEXT_NAMESPACE "VisiblePropertyPathsCombo"
-
-BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
 void SPropertyPathsPicker::Construct(const FArguments& InArgs)
 {
@@ -152,7 +149,7 @@ void SPropertyPathsPicker::OnPropertyPathCheckStatusChanged(ECheckBoxState Check
 					PathsToRemove.Add(TotalPath);
 					PropertyPathHelpers::RemovePaths(PropertyHandle, PathsToRemove);
 					int32 Index = INDEX_NONE;
-					if(TotalPath.FindLastChar('.', Index))
+					if(TotalPath.FindLastChar(PropertyPathHelpers::Get::SeparatorAsChar(), Index))
 					{
 						const FString ChildPath = TotalPath.Left(Index);
 						PropertyPathHelpers::AddPath(PropertyHandle, ChildPath);
@@ -175,7 +172,6 @@ void SPropertyPathsPicker::OnPropertyPathCheckStatusChanged(ECheckBoxState Check
 	}
 }
 
-//TODO:: this gets called very often
 ECheckBoxState SPropertyPathsPicker::IsPropertyChecked(TSharedPtr<FPropertyPathNode> PropertyPathNode) const
 {
 	if(!PropertyPathNode.IsValid())
@@ -210,7 +206,5 @@ void SPropertyPathsPicker::OnSelectAllClicked() const
 	PropertyPathHelpers::AddAllChildren(PropertyHandle, ParentNode);
 	PropertiesTreeWidget->RequestTreeRefresh();
 }
-
-END_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
 #undef LOCTEXT_NAMESPACE

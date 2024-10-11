@@ -26,12 +26,6 @@ public:
 	}
 
 protected:
-	/** Custom name of a structure view details panel */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FText CustomName;
-	UPROPERTY(EditAnywhere, Category="ClassView")
-	FStructPropertyPaths StructPropertyPaths;
-
 	//~ UTypeViewBase interface
 	virtual IDetailsView* GetDetailsView() const override;
 	virtual const UStruct* GetViewType() const override;
@@ -46,6 +40,11 @@ public:
 	// End of UWidget interface
 	
 private:
+	UPROPERTY(EditAnywhere)
+	FText CustomName;
+	UPROPERTY(EditAnywhere, Category="ClassView")
+	FStructPropertyPaths StructPropertyPaths;
+	
 	TSharedRef<IStructureDetailsView> CreateStructureDetailView();
 	void ResetCurrentStruct();
 	

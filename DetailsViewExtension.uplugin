@@ -3,29 +3,21 @@
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "DetailsViewExtension",
-	"Description": "",
-	"Category": "Other",
+	"Description": "Editor widgets that make creating interactive detail view's of structs and classes easier",
+	"Category": "Editor",
 	"CreatedBy": "FifonszGames",
 	"CreatedByURL": "",
 	"DocsURL": "",
 	"MarketplaceURL": "",
 	"CanContainContent": false,
-	"IsBetaVersion": false,
+	"IsBetaVersion": true,
 	"IsExperimentalVersion": false,
 	"Installed": false,
 	"Modules": [
 		{
 			"Name": "DetailsViewExtension",
 			"Type": "Editor",
-			"LoadingPhase": "PostEngineInit"
-		}
-	],
-	"Plugins": [
-		{
-			"Name": "GameplayTagsEditor",
-			"Type": "Editor",
-			"LoadingPhase": "Default",
-			"Enabled": true
+			"LoadingPhase": "Default"
 		}
 	]
 }

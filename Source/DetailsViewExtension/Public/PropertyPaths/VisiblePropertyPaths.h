@@ -34,7 +34,7 @@ struct FVisiblePropertyPaths
 	static FName GetPathsPropertyName() { return GET_MEMBER_NAME_CHECKED(FVisiblePropertyPaths, VisiblePropertyPaths); }
 	static FName GetHiddenPropertyName() { return GET_MEMBER_NAME_CHECKED(FVisiblePropertyPaths, bEditablePropertiesOnly); }
 
-	static TArray<FString> CreatePathsFrom(const UStruct& InSourceClass, const FString& InParentProperty = TEXT(""));
+	static TArray<FString> CreatePathsFrom(const UStruct& InSourceClass, const FString& InParentPropertyName = TEXT(""));
 	static FString CreatePropertyPath(const FPropertyAndParent& InFromProperty);
 	static FString GetPropertyName(const FProperty& InProperty, const bool bInAccountForDisplayMeta = true);
 
@@ -46,13 +46,11 @@ private:
 	bool bEditablePropertiesOnly = true;
 };
 
-//TODO:: create custom make node
 USTRUCT()
 struct FStructPropertyPaths : public FVisiblePropertyPaths
 {
 	GENERATED_BODY()
 	
-	//TODO:: reset paths if class differ
 	void SetSourceClass(const UScriptStruct* InClass) { SourceClass = InClass;}
 	const UScriptStruct* GetSourceClass() const { return SourceClass; }
 	
@@ -63,7 +61,6 @@ private:
 	TObjectPtr<const UScriptStruct> SourceClass;
 };
 
-//TODO:: create custom make node
 USTRUCT()
 struct FClassPropertyPaths : public FVisiblePropertyPaths
 {
@@ -79,24 +76,13 @@ private:
 	TObjectPtr<const UClass> SourceClass;
 };
 
-struct FPropertyPathNodeInitData
-{
-	FPropertyPathNodeInitData(const TSharedRef<IPropertyHandle>& InPropertyHandle, bool bInEditablePropertiesOnly = true)
-	: SourceHandle(InPropertyHandle), bEditablePropertiesOnly(bInEditablePropertiesOnly) {}
-
-	const TSharedRef<IPropertyHandle>& SourceHandle;
-	const bool bEditablePropertiesOnly = true;
-};
-
-struct FPropertyPathNode;
-
 struct FPropertyPathNode : TSharedFromThis<FPropertyPathNode>
 {
 	const FString& GetPropertyName() const { return PropertyName; }
 	FString GetTotalPath() const;
 
 	TArray<TSharedPtr<FPropertyPathNode>> GetChildren(const FString& InFilterString = TEXT("")) const;
-	bool PassesFilter(const FString& String) const;
+	bool PassesFilter(const FString& FilterString) const;
 
 	void Initialize(const TSharedRef<IPropertyHandle>& SourceHandle, const bool bEditablePropertiesOnly);
 	
@@ -114,8 +100,6 @@ private:
 	
 	void AppendPath(FString& OutPath) const;
 	TSharedPtr<FPropertyPathNode> FindChild(const FString& InPath) const;
-
-	inline static TSet<FName> NotSupportedChildClassNames = { FName(TEXT("Vector")), FName(TEXT("Rotator"))};
 
 	FString PropertyName;
 	TArray<TSharedPtr<FPropertyPathNode>> Children;

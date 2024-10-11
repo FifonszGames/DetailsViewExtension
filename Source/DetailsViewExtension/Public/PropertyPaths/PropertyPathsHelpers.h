@@ -25,11 +25,14 @@ namespace PropertyPathHelpers
 	namespace Get
 	{
 		FPropertyEditorModule& PropertyEditor();
-
+		
 		namespace Meta
 		{
 			inline FName DisplayName() { return TEXT("DisplayName"); }
 			inline FName Category() { return TEXT("Category"); }	
 		}
+		
+		inline FString Separator() { return TEXT("."); }
+		inline char SeparatorAsChar() { return Separator()[0]; }
 	}
 }

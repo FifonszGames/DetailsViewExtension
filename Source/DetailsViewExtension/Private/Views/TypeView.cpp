@@ -1,10 +1,8 @@
 ﻿// Copyright FifonszGames. All Rights Reserved.
 
-
 #include "Views/TypeView.h"
 
 #include "PropertyPath.h"
-#include "Math/Color.h"
 
 #define LOCTEXT_NAMESPACE "UMG"
 

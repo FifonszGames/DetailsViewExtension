@@ -2,7 +2,6 @@
 
 
 #include "PropertyPaths/PropertyPathsHelpers.h"
-
 #include "PropertyPaths/VisiblePropertyPaths.h"
 
 namespace PropertyPathHelpers

@@ -1,11 +1,6 @@
 ﻿// Copyright FifonszGames. All Rights Reserved.
 
-
 #include "PropertyPaths/PropertyPathChip.h"
-
-#include "SlateOptMacros.h"
-
-BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
 void SPropertyPathChip::Construct(const FArguments& InArgs)
 {
@@ -61,9 +56,9 @@ void SPropertyPathChip::Construct(const FArguments& InArgs)
 					.OnClicked( FOnClicked::CreateSPLambda(this, [WeakSelf]
 					{
 						TSharedPtr<SPropertyPathChip> Self = WeakSelf.Pin();
-						if(Self.IsValid())
+						if(Self.IsValid() && Self->OnClearPressed.IsBound())
 						{
-							Self->OnClearPressed.ExecuteIfBound();
+							Self->OnClearPressed.Execute();
 						}
 						return FReply::Handled();
 					}))
@@ -79,5 +74,3 @@ void SPropertyPathChip::Construct(const FArguments& InArgs)
 		]
 	];
 }
-
-END_SLATE_FUNCTION_BUILD_OPTIMIZATION

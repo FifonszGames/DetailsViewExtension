@@ -1,9 +1,7 @@
 ﻿// Copyright FifonszGames. All Rights Reserved.
 
-
 #include "Views/StructView.h"
 
-#include "DetailsViewExtensionLibrary.h"
 #include "IStructureDetailsView.h"
 #include "PropertyEditorModule.h"
 #include "PropertyPaths/PropertyPathsHelpers.h"

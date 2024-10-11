@@ -1,4 +1,4 @@
-﻿// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright FifonszGames. All Rights Reserved.
 
 #include "DetailsViewExtension.h"
 
@@ -11,6 +11,7 @@
 void FDetailsViewExtensionModule::StartupModule()
 {
 	FPropertyEditorModule& PropertyModule = PropertyPathHelpers::Get::PropertyEditor();
+	
 	PropertyModule.RegisterCustomPropertyTypeLayout(FStructPropertyPaths::StaticStruct()->GetFName(),
 		FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FVisiblePropertyPathsCustomization::MakeInstance));
 	PropertyModule.RegisterCustomPropertyTypeLayout(FClassPropertyPaths::StaticStruct()->GetFName(),
@@ -20,6 +21,7 @@ void FDetailsViewExtensionModule::StartupModule()
 void FDetailsViewExtensionModule::ShutdownModule()
 {
 	FPropertyEditorModule& PropertyModule = PropertyPathHelpers::Get::PropertyEditor();
+	
 	PropertyModule.UnregisterCustomPropertyTypeLayout(FStructPropertyPaths::StaticStruct()->GetFName());
 	PropertyModule.UnregisterCustomPropertyTypeLayout(FClassPropertyPaths::StaticStruct()->GetFName());
 }
