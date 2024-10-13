@@ -109,8 +109,10 @@ protected:
 	virtual void PostInitProperties() override;
 	//~ End of UWidget interface
 
+	void TryForceRefresh() const;
 	void TryBroadcastPropertyChanged(FName PropertyName) const;
-	
+	virtual void TryUpdateOnPostEditChange(const FPropertyChangedEvent& PropertyChangedEvent);
+
 	UPROPERTY(EditAnywhere, Category = "TypeView", BlueprintReadWrite)
 	FDetailsViewParameters DetailsViewParameters;
 	

@@ -66,9 +66,24 @@ TSharedRef<SWidget> UStructView::CreateContentWidget()
 TSet<FName> UStructView::GetUpdatableMemberVariableNames() const
 {
 	TSet<FName> Names = Super::GetUpdatableMemberVariableNames();
-	Names.Add(GET_MEMBER_NAME_CHECKED(UStructView, CustomName));
 	Names.Add(GET_MEMBER_NAME_CHECKED(UStructView, StructPropertyPaths));
 	return Names;
+}
+
+void UStructView::TryUpdateOnPostEditChange(const FPropertyChangedEvent& PropertyChangedEvent)
+{
+	if(PropertyChangedEvent.GetPropertyName() == GET_MEMBER_NAME_CHECKED(UStructView, CustomName))
+	{
+		if(StructDetailsView.IsValid())
+		{
+			StructDetailsView->SetCustomName(CustomName);
+			TryForceRefresh();
+		}
+	}
+	else
+	{
+		Super::TryUpdateOnPostEditChange(PropertyChangedEvent);
+	}
 }
 
 void UStructView::ResetCurrentStruct()

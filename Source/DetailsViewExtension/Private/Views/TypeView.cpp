@@ -115,30 +115,32 @@ void UTypeView::TryBroadcastPropertyChanged(FName PropertyName) const
 	}
 }
 
+void UTypeView::TryUpdateOnPostEditChange(const FPropertyChangedEvent& PropertyChangedEvent)
+{
+	if(PropertyChangedEvent.GetPropertyName() == FVisiblePropertyPaths::GetPathsPropertyName())
+	{
+		TryForceRefresh();
+	}
+	else
+	{
+		const TSet<FName> Names = GetUpdatableMemberVariableNames();
+		if(Names.Contains(PropertyChangedEvent.GetMemberPropertyName()))
+		{
+			if(UWorld* World = GetWorld(); World && !RefreshHandle.IsValid())
+			{
+				constexpr float RefreshRate = 0.15f;
+				World->GetTimerManager().SetTimer(RefreshHandle, FTimerDelegate::CreateUObject(this, &UTypeView::RefreshContentWidgetAfterTimer), RefreshRate, false);
+			}
+		}
+	}
+}
+
 void UTypeView::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 	if (IsDesignTime())
 	{
-		if(PropertyChangedEvent.GetPropertyName() == FVisiblePropertyPaths::GetPathsPropertyName())
-		{
-			if(IDetailsView* DetailsView = GetDetailsView())
-			{
-				DetailsView->ForceRefresh();
-			}
-		}
-		else
-		{
-			const TSet<FName> Names = GetUpdatableMemberVariableNames();
-			if(Names.Contains(PropertyChangedEvent.GetMemberPropertyName()))
-			{
-				if(UWorld* World = GetWorld(); World && !RefreshHandle.IsValid())
-				{
-					constexpr float RefreshRate = 0.15f;
-					World->GetTimerManager().SetTimer(RefreshHandle, FTimerDelegate::CreateUObject(this, &UTypeView::RefreshContentWidgetAfterTimer), RefreshRate, false);
-				}
-			}
-		}
+		TryUpdateOnPostEditChange(PropertyChangedEvent);
 	}
 }
 
@@ -187,6 +189,14 @@ void UTypeView::PostInitProperties()
 	if(!HasAnyFlags(RF_ClassDefaultObject))
 	{
 		InitialClass = GetVisiblePropertyPaths().GetSourceStruct();
+	}
+}
+
+void UTypeView::TryForceRefresh() const
+{
+	if(IDetailsView* DetailsView = GetDetailsView())
+	{
+		DetailsView->ForceRefresh();
 	}
 }
 

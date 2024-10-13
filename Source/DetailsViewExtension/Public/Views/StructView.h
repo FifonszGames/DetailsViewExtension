@@ -31,6 +31,7 @@ protected:
 	virtual const UStruct* GetViewType() const override;
 	virtual TSharedRef<SWidget> CreateContentWidget() override;
 	virtual TSet<FName> GetUpdatableMemberVariableNames() const override;
+	virtual void TryUpdateOnPostEditChange(const FPropertyChangedEvent& PropertyChangedEvent) override;
 	virtual const FVisiblePropertyPaths& GetVisiblePropertyPaths() const override { return StructPropertyPaths; }
 	// End of UTypeViewBase interface
 	
