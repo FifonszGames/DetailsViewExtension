@@ -120,13 +120,23 @@ void UTypeView::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 	if (IsDesignTime())
 	{
-		const TSet<FName> Names = GetUpdatableMemberVariableNames();
-		if(Names.Contains(PropertyChangedEvent.GetMemberPropertyName()))
+		if(PropertyChangedEvent.GetPropertyName() == FVisiblePropertyPaths::GetPathsPropertyName())
 		{
-			if(UWorld* World = GetWorld(); World && !RefreshHandle.IsValid())
+			if(IDetailsView* DetailsView = GetDetailsView())
 			{
-				constexpr float RefreshRate = 0.15f;
-				World->GetTimerManager().SetTimer(RefreshHandle, FTimerDelegate::CreateUObject(this, &UTypeView::RefreshContentWidgetAfterTimer), RefreshRate, false);
+				DetailsView->ForceRefresh();
+			}
+		}
+		else
+		{
+			const TSet<FName> Names = GetUpdatableMemberVariableNames();
+			if(Names.Contains(PropertyChangedEvent.GetMemberPropertyName()))
+			{
+				if(UWorld* World = GetWorld(); World && !RefreshHandle.IsValid())
+				{
+					constexpr float RefreshRate = 0.15f;
+					World->GetTimerManager().SetTimer(RefreshHandle, FTimerDelegate::CreateUObject(this, &UTypeView::RefreshContentWidgetAfterTimer), RefreshRate, false);
+				}
 			}
 		}
 	}
