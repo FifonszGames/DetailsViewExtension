@@ -42,6 +42,7 @@ void UTypeView::RefreshContentWidget()
 		if(IDetailsView* DetailsView = GetDetailsView())
 		{
 			DetailsView->SetIsPropertyEditingEnabledDelegate(FIsPropertyEditingEnabled::CreateUObject(this, &UTypeView::GetIsPropertyEditingEnabled));
+			DetailsView->ForceRefresh();
 		}
 	}
 	else
