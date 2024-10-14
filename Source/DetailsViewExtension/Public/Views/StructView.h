@@ -43,7 +43,7 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 	FText CustomName;
-	UPROPERTY(EditAnywhere, Category="ClassView")
+	UPROPERTY(EditAnywhere, Category="StructView")
 	FStructPropertyPaths StructPropertyPaths;
 	
 	TSharedRef<IStructureDetailsView> CreateStructureDetailView();
