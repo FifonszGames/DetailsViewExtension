@@ -72,12 +72,12 @@ void SPropertyPathsPicker::Construct(const FArguments& InArgs)
 	MenuBuilder.BeginSection(FName(), FText::FromString(TEXT("Property Paths")));
 		
 	MenuBuilder.AddMenuEntry(
-		FText::FromString(TEXT("Clear all paths")), FText::GetEmpty(), FSlateIcon(FAppStyle::GetAppStyleSetName(), "Icons.X"),
+		FText::FromString(TEXT("Clear all properties")), FText::GetEmpty(), FSlateIcon(FAppStyle::GetAppStyleSetName(), "Icons.X"),
 		FUIAction(FExecuteAction::CreateRaw(this, &SPropertyPathsPicker::OnClearAllClicked))
 	);
 
 	MenuBuilder.AddMenuEntry(
-		FText::FromString(TEXT("Select all paths")), FText::GetEmpty(), FSlateIcon(FAppStyle::GetAppStyleSetName(), "Icons.X"),
+		FText::FromString(TEXT("Select all properties")), FText::GetEmpty(), FSlateIcon(FAppStyle::GetAppStyleSetName(), "Icons.Plus"),
 		FUIAction(FExecuteAction::CreateRaw(this, &SPropertyPathsPicker::OnSelectAllClicked))
 	);
 	
@@ -148,11 +148,15 @@ void SPropertyPathsPicker::OnPropertyPathCheckStatusChanged(ECheckBoxState Check
 					});
 					PathsToRemove.Add(TotalPath);
 					PropertyPathHelpers::RemovePaths(PropertyHandle, PathsToRemove);
+					
 					int32 Index = INDEX_NONE;
 					if(TotalPath.FindLastChar(PropertyPathHelpers::Get::SeparatorAsChar(), Index))
 					{
 						const FString ChildPath = TotalPath.Left(Index);
-						PropertyPathHelpers::AddPath(PropertyHandle, ChildPath);
+						if(!Paths->HasMatchingPath(ChildPath))
+						{
+							PropertyPathHelpers::AddPath(PropertyHandle, ChildPath);
+						}
 					}
 					break;
 				}
