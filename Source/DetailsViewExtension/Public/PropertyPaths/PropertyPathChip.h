@@ -20,7 +20,7 @@ struct FPropertyPathChipData
 
 class ClearButton;
 
-class DETAILSVIEWEXTENSION_API SPropertyPathChip : public SCompoundWidget
+class SPropertyPathChip : public SCompoundWidget
 {
 public:
 	DECLARE_DELEGATE(FOnClearPressed);

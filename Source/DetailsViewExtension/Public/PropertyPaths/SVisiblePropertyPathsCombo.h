@@ -9,7 +9,7 @@ class SPropertyPathsPicker;
 
 enum class EPropertyPathChipState;
 
-class DETAILSVIEWEXTENSION_API SVisiblePropertyPathsCombo : public SCompoundWidget
+class SVisiblePropertyPathsCombo : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(SVisiblePropertyPathsCombo)

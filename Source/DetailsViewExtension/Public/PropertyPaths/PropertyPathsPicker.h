@@ -7,7 +7,7 @@
 
 class ITableRow;
 
-class DETAILSVIEWEXTENSION_API SPropertyPathsPicker : public SCompoundWidget
+class SPropertyPathsPicker : public SCompoundWidget
 {
 public:
 	SLATE_BEGIN_ARGS(SPropertyPathsPicker)
