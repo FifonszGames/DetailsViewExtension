@@ -35,7 +35,6 @@ void SVisiblePropertyPathsCombo::Construct(const FArguments& InArgs)
 	PropertyPathsListView = SNew(SListView<TSharedPtr<FString>>)
 		.ListItemsSource(&SelectedPropertyPaths)
 		.SelectionMode(ESelectionMode::None)
-		.ItemHeight(ItemHeight)// FIX
 		.ListViewStyle(&FAppStyle::Get().GetWidgetStyle<FTableViewStyle>("SimpleListView"))
 		.Visibility(SelectedPropertyPaths.IsEmpty() ? EVisibility::Collapsed : EVisibility::Visible)
 		.OnGenerateRow(this, &SVisiblePropertyPathsCombo::MakePropertyPathListViewRow);
