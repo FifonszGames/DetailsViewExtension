@@ -41,7 +41,7 @@ public:
 	// End of UWidget interface
 	
 private:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="StructView")
 	FText CustomName;
 	UPROPERTY(EditAnywhere, Category="StructView")
 	FStructPropertyPaths StructPropertyPaths;

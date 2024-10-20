@@ -29,7 +29,7 @@ namespace PropertyPathHelpers
 		namespace Meta
 		{
 			inline FName DisplayName() { return TEXT("DisplayName"); }
-			inline FName Category() { return TEXT("Category"); }	
+			inline FName Category() { return TEXT("Category"); }
 		}
 		
 		inline FString Separator() { return TEXT("."); }

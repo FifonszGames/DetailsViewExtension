@@ -32,17 +32,16 @@ struct FVisiblePropertyPaths
 	
 	static FName GetClassPropertyName() { return FName(TEXT("SourceClass")); }
 	static FName GetPathsPropertyName() { return GET_MEMBER_NAME_CHECKED(FVisiblePropertyPaths, VisiblePropertyPaths); }
-	static FName GetHiddenPropertyName() { return GET_MEMBER_NAME_CHECKED(FVisiblePropertyPaths, bEditablePropertiesOnly); }
+	static FName GetEditablePropertiesOnlyName() { return GET_MEMBER_NAME_CHECKED(FVisiblePropertyPaths, bEditablePropertiesOnly); }
 
 	static TArray<FString> CreatePathsFrom(const UStruct& InSourceClass, const FString& InParentPropertyName = TEXT(""));
 	static FString CreatePropertyPath(const FPropertyAndParent& InFromProperty);
 	static FString GetPropertyName(const FProperty& InProperty, const bool bInAccountForDisplayMeta = true);
 
 private:
-	UPROPERTY(EditAnywhere, meta=(EditFixedOrder))
+	UPROPERTY(EditAnywhere, meta=(EditFixedOrder), Category="VisiblePropertyPaths")
 	TArray<FString> VisiblePropertyPaths;
-	/** If true, all properties will be visible, not just those with CPF_Edit */
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="VisiblePropertyPaths")
 	bool bEditablePropertiesOnly = true;
 };
 
@@ -57,7 +56,7 @@ struct FStructPropertyPaths : public FVisiblePropertyPaths
 	virtual const UStruct* GetSourceStruct() const override { return SourceClass;}
 
 private:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="VisiblePropertyPaths")
 	TObjectPtr<const UScriptStruct> SourceClass;
 };
 
@@ -72,7 +71,7 @@ struct FClassPropertyPaths : public FVisiblePropertyPaths
 	virtual const UStruct* GetSourceStruct() const override { return SourceClass;}
 	
 private:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="VisiblePropertyPaths")
 	TObjectPtr<const UClass> SourceClass;
 };
 

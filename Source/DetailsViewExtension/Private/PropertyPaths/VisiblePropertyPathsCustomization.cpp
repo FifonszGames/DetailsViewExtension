@@ -36,7 +36,7 @@ void FVisiblePropertyPathsCustomization::CustomizeHeader(TSharedRef<IPropertyHan
 void FVisiblePropertyPathsCustomization::CustomizeChildren(TSharedRef<IPropertyHandle> InStructPropertyHandle, IDetailChildrenBuilder& ChildBuilder, IPropertyTypeCustomizationUtils& StructCustomizationUtils)
 {
 	ChildBuilder.AddProperty(InStructPropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetClassPropertyName()).ToSharedRef());
-	ChildBuilder.AddProperty(InStructPropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetHiddenPropertyName()).ToSharedRef());
+	ChildBuilder.AddProperty(InStructPropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetEditablePropertiesOnlyName()).ToSharedRef());
 		
 	TSharedRef<IPropertyHandle> PathsHandle = InStructPropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetPathsPropertyName()).ToSharedRef();
 	FDetailWidgetRow& CustomRow = ChildBuilder.AddCustomRow(PathsHandle->GetPropertyDisplayName());

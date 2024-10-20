@@ -3,6 +3,7 @@
 #include "Views/TypeView.h"
 
 #include "PropertyPath.h"
+#include "PropertyPaths/PropertyPathsHelpers.h"
 
 #define LOCTEXT_NAMESPACE "UMG"
 
@@ -59,14 +60,6 @@ void UTypeView::ToggleFilterArea(bool bInToVisible) const
 	}
 }
 
-void UTypeView::ShowAllAdvancedProperties() const
-{
-	if(IDetailsView* DetailsView = GetDetailsView())
-	{
-		DetailsView->ShowAllAdvancedProperties();
-	}
-}
-
 void UTypeView::ClearSearch() const
 {
 	if(IDetailsView* DetailsView = GetDetailsView())
@@ -79,11 +72,9 @@ void UTypeView::HighlightProperty(FName InPropertyName) const
 {
 	if(IDetailsView* DetailsView = GetDetailsView())
 	{
-		FPropertyPath PropertyPath;
-		if(GetPropertyPath(InPropertyName, PropertyPath))
-		{
-			DetailsView->HighlightProperty(PropertyPath);
-		}
+		FPropertyPath PropertyPath = FPropertyPath::CreateEmpty().Get();
+		GetPropertyPath(InPropertyName, PropertyPath);
+		DetailsView->HighlightProperty(PropertyPath);
 	}
 }
 
@@ -96,14 +87,6 @@ void UTypeView::ScrollPropertyIntoView(FName InPropertyName, bool bInExpandPrope
 		{
 			DetailsView->ScrollPropertyIntoView(PropertyPath, bInExpandProperty);
 		}
-	}
-}
-
-void UTypeView::SetDisableCustomDetailLayouts(bool bInIsEnabled) const
-{
-	if(IDetailsView* DetailsView = GetDetailsView())
-	{
-		DetailsView->SetDisableCustomDetailLayouts(bInIsEnabled);
 	}
 }
 
@@ -208,7 +191,7 @@ bool UTypeView::GetIsPropertyVisible(const FPropertyAndParent& InPropertyAndPare
 		//TODO:: add support to change visible paths after dynamically changing them
 		if(InitialClass != Paths.GetSourceStruct())
 		{
-			return true;
+			return InPropertyAndParent.Property.HasAnyPropertyFlags(CPF_Edit);
 		}
 	}
 	if(!Paths.IsEmpty() && Paths.GetSourceStruct() == GetViewType())
@@ -232,10 +215,13 @@ bool UTypeView::GetPropertyPath(FName InPropertyName, FPropertyPath& OutPath) co
 {
 	if(const UStruct* Type = GetViewType())
 	{
-		if(FProperty* Property = Type->FindPropertyByName(InPropertyName))
+		for (FProperty* Property = Type->PropertyLink; Property != nullptr; Property = Property->PropertyLinkNext)
 		{
-			OutPath = FPropertyPath::Create(Property).Get();
-			return OutPath.IsValid();
+			if (Property->GetFName() == InPropertyName || Property->GetMetaData(PropertyPathHelpers::Get::Meta::DisplayName()) == InPropertyName)
+			{
+				OutPath = FPropertyPath::Create(Property).Get();
+				return OutPath.IsValid();
+			}
 		}
 	}
 	return false;

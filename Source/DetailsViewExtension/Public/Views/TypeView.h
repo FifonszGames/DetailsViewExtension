@@ -18,35 +18,35 @@ struct FDetailsViewParameters
 	FDetailsViewArgs AsDetailsViewArgs() const;
 
 	/** True if we allow filtering through search and the filter dropdown menu. */
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="ViewData")
 	bool bAllowFiltering = false;
 
 	/** If false, the current properties editor will never display the favorite system */
-	UPROPERTY(EditAnywhere, meta = (EditCondition = "bAllowFiltering"))
+	UPROPERTY(EditAnywhere, Category="ViewData", meta = (EditCondition = "bAllowFiltering"))
 	bool bAllowFavoriteSystem = false;
 
 	/** True if you want to show the 'Show Only Modified Properties'. Only valid in conjunction with bAllowFiltering */
-	UPROPERTY(EditAnywhere, meta = (EditCondition = "bAllowFiltering"))
+	UPROPERTY(EditAnywhere, Category="ViewData", meta = (EditCondition = "bAllowFiltering"))
 	bool bShowModifiedPropertiesOption = false;
 
 	/** True if you want to show the 'Show Only Keyable Properties'. Only valid in conjunction with bAllowFiltering */
-	UPROPERTY(EditAnywhere, meta = (EditCondition = "bAllowFiltering"))
+	UPROPERTY(EditAnywhere, Category="ViewData", meta = (EditCondition = "bAllowFiltering"))
 	bool bShowKeyablePropertiesOption = true;
 
 	/** True if you want to show the 'Show Only Animated Properties'. Only valid in conjunction with bAllowFiltering */
-	UPROPERTY(EditAnywhere, meta = (EditCondition = "bAllowFiltering"))
+	UPROPERTY(EditAnywhere, Category="ViewData", meta = (EditCondition = "bAllowFiltering"))
 	bool bShowAnimatedPropertiesOption = true;
 
 	/** The default column width */
-	UPROPERTY(EditAnywhere, meta=(ClampMin=0.0f, ClampMax=1.0f))
+	UPROPERTY(EditAnywhere, Category="ViewData", meta=(ClampMin=0.0f, ClampMax=1.0f))
 	float ColumnWidth = 0.65f;
 
 	/** The minimum width of the right column in Slate units. */
-	UPROPERTY(EditAnywhere, meta=(ClampMin=0.0f))
+	UPROPERTY(EditAnywhere, Category="ViewData", meta=(ClampMin=0.0f))
 	float RightColumnMinWidth = 22.f;
 
 	/** If false, the details panel's scrollbar will always be hidden. Useful when embedding details panels in widgets that either grow to accommodate them, or with scrollbars of their own. */
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="ViewData")
 	bool bShowScrollBar = true;
 };
 
@@ -62,8 +62,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category="TypeView")
 	void ToggleFilterArea(bool bInToVisible) const;
 	UFUNCTION(BlueprintCallable, Category="TypeView")
-	void ShowAllAdvancedProperties() const;
-	UFUNCTION(BlueprintCallable, Category="TypeView")
 	void ClearSearch() const;
 
 	UFUNCTION(BlueprintCallable, Category="TypeView")
@@ -73,9 +71,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="TypeView")
 	void SetIsPropertyEditingEnabled(const bool bInIsEnabled) { bIsPropertyEditingEnabled = bInIsEnabled; }
-
-	UFUNCTION(BlueprintCallable, Category="TypeView")
-	void SetDisableCustomDetailLayouts(bool bInIsEnabled) const;
 
 protected:
 	FDetailsViewArgs CreateDetailsViewArgs();

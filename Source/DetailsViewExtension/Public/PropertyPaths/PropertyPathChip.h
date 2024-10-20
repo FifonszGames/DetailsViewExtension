@@ -7,7 +7,6 @@
 enum class EPropertyPathChipState
 {
 	Valid,
-	ValidButUnused,
 	Invalid
 };
 
@@ -43,7 +42,6 @@ public:
 private:
 	inline static const TMap<EPropertyPathChipState, FPropertyPathChipData> StateData = {
 		{EPropertyPathChipState::Valid, FPropertyPathChipData(FStyleColors::White, FText::FromString("Valid"))},
-		{EPropertyPathChipState::ValidButUnused, FPropertyPathChipData(FStyleColors::AccentYellow, FText::FromString("ValidButUnused"))},
 		{EPropertyPathChipState::Invalid, FPropertyPathChipData(FStyleColors::AccentRed, FText::FromString("Invalid"))}
 	};
 

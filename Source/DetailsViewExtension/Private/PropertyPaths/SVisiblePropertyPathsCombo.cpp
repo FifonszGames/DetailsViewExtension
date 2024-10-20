@@ -23,7 +23,7 @@ void SVisiblePropertyPathsCombo::Construct(const FArguments& InArgs)
 	
 	TSharedPtr<IPropertyHandle> ClassPropHandle = PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetClassPropertyName());
 	PropertyHandle->SetOnChildPropertyValueChangedWithData(TDelegate<void(const FPropertyChangedEvent&)>::CreateSP(this, &SVisiblePropertyPathsCombo::OnPropertyValueChanged));
-	PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetHiddenPropertyName())->GetValue(bEditablePropertiesOnly);
+	PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetEditablePropertiesOnlyName())->GetValue(bEditablePropertiesOnly);
 	InitializeParentNode(ClassPropHandle.ToSharedRef());
 	
 	CreateSelectedPropertyPathsList();
@@ -105,11 +105,7 @@ void SVisiblePropertyPathsCombo::InitializeParentNode(const TSharedRef<IProperty
 EPropertyPathChipState SVisiblePropertyPathsCombo::GetChipState(const FString& InForPath) const
 {
 	TSharedPtr<FPropertyPathNode> PropertyNode = ParentNode->GetPropertyByPath(*InForPath);
-	if(PropertyNode.IsValid())
-	{
-		return !PropertyNode->IsEditableProperty() && bEditablePropertiesOnly ? EPropertyPathChipState::ValidButUnused : EPropertyPathChipState::Valid; 
-	}
-	return EPropertyPathChipState::Invalid;
+	return PropertyNode.IsValid() ? EPropertyPathChipState::Valid : EPropertyPathChipState::Invalid;
 }
 
 TSharedRef<ITableRow> SVisiblePropertyPathsCombo::MakePropertyPathListViewRow(TSharedPtr<FString> Item, const TSharedRef<STableViewBase>& TableViewBase)
@@ -180,9 +176,9 @@ void SVisiblePropertyPathsCombo::OnPropertyValueChanged(const FPropertyChangedEv
 			PropertyPathsListView->SetVisibility(SelectedPropertyPaths.IsEmpty() ? EVisibility::Collapsed : EVisibility::Visible);
 		}
 	}
-	else if(FVisiblePropertyPaths::GetHiddenPropertyName() == InEvent.GetPropertyName())
+	else if(FVisiblePropertyPaths::GetEditablePropertiesOnlyName() == InEvent.GetPropertyName())
 	{
-		PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetHiddenPropertyName())->GetValue(bEditablePropertiesOnly);
+		PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetEditablePropertiesOnlyName())->GetValue(bEditablePropertiesOnly);
 		if(ParentNode->IsEditableProperty() != bEditablePropertiesOnly)
 		{
 			InitializeParentNode();
