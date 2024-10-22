@@ -31,8 +31,7 @@ FDetailsViewArgs FDetailsViewParameters::AsDetailsViewArgs() const
 
 TSet<FName> UTypeView::GetUpdatableMemberVariableNames() const
 {
-	TSet BaseNames{GET_MEMBER_NAME_CHECKED(UTypeView, DetailsViewParameters), GET_MEMBER_NAME_CHECKED(UTypeView, bIsPropertyEditingEnabled),};
-	return BaseNames;
+	return {GET_MEMBER_NAME_CHECKED(UTypeView, DetailsViewParameters)};
 }
 
 void UTypeView::RefreshContentWidget()
