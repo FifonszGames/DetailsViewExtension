@@ -112,11 +112,16 @@ protected:
 	FDetailsViewParameters DetailsViewParameters;
 	
 private:
+	bool IsCustomRowVisible(FName PropertyName, FName PropertyCategory) const;
+	
 	void RefreshContentWidget();
 	void RefreshContentWidgetAfterTimer();
 	bool GetPropertyPath(FName InPropertyName, FPropertyPath& OutPath) const;
 
 	FORCEINLINE bool GetIsPropertyEditingEnabled() const { return bIsPropertyEditingEnabled; }
+	
+	UPROPERTY(EditAnywhere, Category = "TypeView")
+	bool bShowCustomProperties;
 	
 	UPROPERTY(Transient)
 	TObjectPtr<const UStruct> InitialClass;

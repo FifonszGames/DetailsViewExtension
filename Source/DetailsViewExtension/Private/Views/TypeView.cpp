@@ -34,6 +34,11 @@ TSet<FName> UTypeView::GetUpdatableMemberVariableNames() const
 	return {GET_MEMBER_NAME_CHECKED(UTypeView, DetailsViewParameters)};
 }
 
+bool UTypeView::IsCustomRowVisible(FName PropertyName, FName PropertyCategory) const
+{
+	return bShowCustomProperties;
+}
+
 void UTypeView::RefreshContentWidget()
 {
 	if(DisplayedWidget.IsValid())
@@ -42,6 +47,7 @@ void UTypeView::RefreshContentWidget()
 		if(IDetailsView* DetailsView = GetDetailsView())
 		{
 			DetailsView->SetIsPropertyEditingEnabledDelegate(FIsPropertyEditingEnabled::CreateUObject(this, &UTypeView::GetIsPropertyEditingEnabled));
+			DetailsView->SetIsCustomRowVisibleDelegate(FIsCustomRowVisible::CreateUObject(this, &UTypeView::IsCustomRowVisible));
 			DetailsView->ForceRefresh();
 		}
 	}
