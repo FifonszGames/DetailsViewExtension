@@ -27,20 +27,14 @@ struct FVisiblePropertyPaths
 	explicit FVisiblePropertyPaths() = default;
 
 	static const FVisiblePropertyPaths Invalid;
-	
-	void AddPath(const FString& PropertyPath);
 
 	bool Contains(const FPropertyAndParent& InProperty) const;
 	bool ContainsCustomRow(const FName& PropertyName, const FName& PropertyCategory) const;
-
-	bool HasMatchingPathExact(const FString& PropertyPath) const;
 	bool HasMatchingPath(const FString& PropertyPath, ESearchCase::Type SearchCase = ESearchCase::IgnoreCase) const;
-	bool HasLeaf(const FString& PropertyPath, ESearchCase::Type SearchCase = ESearchCase::IgnoreCase) const;
 
-	void RemovePath(const FString& InPath) { VisiblePropertyPaths.Remove(InPath); }
+	bool IsEmpty() const { return VisiblePropertyPaths.IsEmpty(); }
 	
 	const TArray<FString>& GetPaths() const { return VisiblePropertyPaths; }
-	bool IsEmpty() const { return VisiblePropertyPaths.IsEmpty(); }
 	virtual const UStruct* GetSourceStruct() const { return nullptr;}
 
 	bool ShowEditablePropertiesOnly() const { return bEditablePropertiesOnly; }
@@ -50,12 +44,11 @@ struct FVisiblePropertyPaths
 	static FName GetEditablePropertiesOnlyName() { return GET_MEMBER_NAME_CHECKED(FVisiblePropertyPaths, bEditablePropertiesOnly); }
 	static FName GetVisibleCustomRowsName() { return GET_MEMBER_NAME_CHECKED(FVisiblePropertyPaths, VisibleCustomProperties); }
 
-	static TArray<FString> CreatePathsFrom(const UStruct& InSourceClass, const FString& InParentPropertyName = TEXT(""));
+private:
 	static FString CreatePropertyPath(const FPropertyAndParent& InFromProperty);
 	static FString GetPropertyName(const FProperty& InProperty, const bool bInAccountForDisplayMeta = true);
-
-private:
-	UPROPERTY(EditAnywhere, meta=(EditFixedOrder), Category="VisiblePropertyPaths")
+	
+	UPROPERTY(EditAnywhere, Category="VisiblePropertyPaths")
 	TArray<FString> VisiblePropertyPaths;
 	UPROPERTY(EditAnywhere, Category="VisiblePropertyPaths")
 	bool bEditablePropertiesOnly = true;
@@ -95,24 +88,22 @@ private:
 
 struct FPropertyPathNode : TSharedFromThis<FPropertyPathNode>
 {
-	const FString& GetPropertyName() const { return PropertyName; }
-	FString GetTotalPath() const;
-
-	TArray<TSharedPtr<FPropertyPathNode>> GetChildren(const FString& InFilterString = TEXT("")) const;
-	bool PassesFilter(const FString& FilterString) const;
-
 	void Initialize(const TSharedRef<IPropertyHandle>& SourceHandle, const bool bEditablePropertiesOnly);
 	
+	TArray<TSharedPtr<FPropertyPathNode>> GetChildren(const FString& InFilterString = TEXT("")) const;
 	void FillWithOutmostChildren(TArray<TSharedPtr<FPropertyPathNode>>& OutItems, const bool bIncludeSelf = false);
-
+	
 	TSharedPtr<FPropertyPathNode> GetPropertyByPath(const FString& InPath, const bool bInCountSelf = false) const;
+	FString GetTotalPath() const;
+	const FString& GetPropertyName() const { return PropertyName; }
+
+	bool PassesFilter(const FString& FilterString) const;
 	bool IsEditableProperty() const { return bIsEditableProperty;}
 
 private:
-	void Initialize(const FProperty& InSourceProperty, const UStruct& InOutMostParentClass, const bool bInEditablePropertiesOnly);
-	void Initialize(const FProperty& InSourceProperty, const UStruct& InOutMostParentClass, const TWeakPtr<const FPropertyPathNode>& InParent, const bool bInEditablePropertiesOnly, const bool bInIsEditable);
+	void Initialize(const FProperty& InSourceProperty, const UStruct& InOutMostParentClass, const TWeakPtr<const FPropertyPathNode>& InParent,
+		const bool bInEditablePropertiesOnly, const bool bInIsEditable);
 	
-	void CreateChildren(const UStruct& OutMostParentClass, const UStruct* InFromClass, const bool bInEditablePropertiesOnly);
 	void CreateChildren(const UStruct& InOutMostParentClass, const UStruct& InFromClass, const bool bInEditablePropertiesOnly);
 	
 	void AppendPath(FString& OutPath) const;

@@ -26,11 +26,6 @@ bool FVisibleCustomProperties::Contains(const FName& PropertyName, const FName& 
 	return false;
 }
 
-void FVisiblePropertyPaths::AddPath(const FString& PropertyPath)
-{
-	VisiblePropertyPaths.AddUnique(PropertyPath);
-}
-
 bool FVisiblePropertyPaths::Contains(const FPropertyAndParent& InProperty) const
 {
 	const FString PropertyPath = CreatePropertyPath(InProperty);
@@ -42,38 +37,9 @@ bool FVisiblePropertyPaths::ContainsCustomRow(const FName& PropertyName, const F
 	return VisibleCustomProperties.Contains(PropertyName, PropertyCategory);
 }
 
-bool FVisiblePropertyPaths::HasMatchingPathExact(const FString& PropertyPath) const
-{
-	return VisiblePropertyPaths.ContainsByPredicate([&PropertyPath](const FString& Path){ return Path == PropertyPath; });
-}
-
 bool FVisiblePropertyPaths::HasMatchingPath(const FString& PropertyPath, ESearchCase::Type SearchCase) const
 {
 	return VisiblePropertyPaths.ContainsByPredicate([&PropertyPath, &SearchCase](const FString& Path){ return Path.StartsWith(PropertyPath, SearchCase); });
-}
-
-bool FVisiblePropertyPaths::HasLeaf(const FString& PropertyPath, ESearchCase::Type SearchCase) const
-{
-	return VisiblePropertyPaths.ContainsByPredicate([&PropertyPath, &SearchCase](const FString& Path){ return Path.EndsWith(PropertyPath, SearchCase); });
-}
-
-TArray<FString> FVisiblePropertyPaths::CreatePathsFrom(const UStruct& InSourceClass, const FString& InParentPropertyName)
-{
-	TArray<FString> Paths;
-	UDetailsViewExtensionLibrary::ForeachProperty(&InSourceClass, [&Paths, &InParentPropertyName](const FProperty& Property)
-	{
-		const FString PropertyName = InParentPropertyName.IsEmpty() ? GetPropertyName(Property) : InParentPropertyName + PropertyPathHelpers::Get::Separator() + GetPropertyName(Property);
-		Paths.Add(PropertyName);
-		if(const FStructProperty* StructProperty = CastField<FStructProperty>(&Property))
-		{
-			Paths.Append(CreatePathsFrom(*StructProperty->Struct, PropertyName));
-		}
-		else if(const FObjectProperty* ObjectProperty = CastField<FObjectProperty>(&Property))
-		{
-			Paths.Append(CreatePathsFrom(*ObjectProperty->PropertyClass, PropertyName));
-		}
-	});
-	return Paths;
 }
 
 FString FVisiblePropertyPaths::CreatePropertyPath(const FPropertyAndParent& InFromProperty)
@@ -114,24 +80,6 @@ FString FVisiblePropertyPaths::GetPropertyName(const FProperty& InProperty, cons
 	return InProperty.GetName();
 }
 
-FString FPropertyPathNode::GetTotalPath() const
-{
-	FString Path = PropertyName;
-	if(Parent.IsValid())
-	{
-		Parent.Pin()->AppendPath(Path);
-	}
-	return Path;
-}
-
-TArray<TSharedPtr<FPropertyPathNode>> FPropertyPathNode::GetChildren(const FString& InFilterString) const
-{
-	return Children.FilterByPredicate([InFilterString](const TSharedPtr<FPropertyPathNode>& Child)
-	{
-		return Child->PassesFilter(InFilterString);
-	});
-}
-
 void FPropertyPathNode::Initialize(const TSharedRef<IPropertyHandle>& SourceHandle, const bool bEditablePropertiesOnly)
 {
 	bIsEditableProperty = bEditablePropertiesOnly;
@@ -143,6 +91,14 @@ void FPropertyPathNode::Initialize(const TSharedRef<IPropertyHandle>& SourceHand
 		SourceClass = Class;
 		CreateChildren(*Class, *Class, bEditablePropertiesOnly);
 	}
+}
+
+TArray<TSharedPtr<FPropertyPathNode>> FPropertyPathNode::GetChildren(const FString& InFilterString) const
+{
+	return Children.FilterByPredicate([InFilterString](const TSharedPtr<FPropertyPathNode>& Child)
+	{
+		return Child->PassesFilter(InFilterString);
+	});
 }
 
 void FPropertyPathNode::FillWithOutmostChildren(TArray<TSharedPtr<FPropertyPathNode>>& OutItems, const bool bIncludeSelf)
@@ -171,9 +127,30 @@ TSharedPtr<FPropertyPathNode> FPropertyPathNode::GetPropertyByPath(const FString
 	return FindChild(InPath);
 }
 
-void FPropertyPathNode::Initialize(const FProperty& InSourceProperty, const UStruct& InOutMostParentClass, const bool bInEditablePropertiesOnly)
+FString FPropertyPathNode::GetTotalPath() const
 {
+	FString Path = PropertyName;
+	if(Parent.IsValid())
+	{
+		Parent.Pin()->AppendPath(Path);
+	}
+	return Path;
+}
+
+bool FPropertyPathNode::PassesFilter(const FString& FilterString) const
+{
+	return FilterString.IsEmpty() ||
+		PropertyName.Contains(FilterString) ||
+		Algo::AnyOf(Children, [&FilterString](const TSharedPtr<FPropertyPathNode>& Child){ return Child->PassesFilter(FilterString);});
+}
+
+void FPropertyPathNode::Initialize(const FProperty& InSourceProperty, const UStruct& InOutMostParentClass, const TWeakPtr<const FPropertyPathNode>& InParent,
+	const bool bInEditablePropertiesOnly, const bool bInIsEditable)
+{
+	bIsEditableProperty = bInIsEditable;
+	Parent = InParent;
 	PropertyName = UDetailsViewExtensionLibrary::GetFieldNameString(InSourceProperty, true);
+	
 	bool bCreateChildren = !InSourceProperty.HasAnyPropertyFlags(CPF_TObjectPtr | CPF_UObjectWrapper);
 	if(const FStructProperty* StructProperty = CastField<FStructProperty>(&InSourceProperty))
 	{
@@ -192,17 +169,10 @@ void FPropertyPathNode::Initialize(const FProperty& InSourceProperty, const UStr
 			bCreateChildren = false;
 		}
 	}
-	if(bCreateChildren)
+	if(bCreateChildren && SourceClass.IsValid())
 	{
-		CreateChildren(InOutMostParentClass, SourceClass.Get(), bInEditablePropertiesOnly);
+		CreateChildren(InOutMostParentClass, *SourceClass.Get(), bInEditablePropertiesOnly);
 	}
-}
-
-void FPropertyPathNode::Initialize(const FProperty& InSourceProperty, const UStruct& InOutMostParentClass, const TWeakPtr<const FPropertyPathNode>& InParent, const bool bInEditablePropertiesOnly, const bool bInIsEditable)
-{
-	bIsEditableProperty = bInIsEditable;
-	Parent = InParent;
-	Initialize(InSourceProperty, InOutMostParentClass, bInEditablePropertiesOnly);
 }
 
 void FPropertyPathNode::AppendPath(FString& OutPath) const
@@ -221,14 +191,6 @@ TSharedPtr<FPropertyPathNode> FPropertyPathNode::FindChild(const FString& InPath
 		return ChildNode.IsValid() && ChildNode->GetPropertyByPath(InPath, true);
 	});
 	return Child ? *Child : nullptr;
-}
-
-void FPropertyPathNode::CreateChildren(const UStruct& OutMostParentClass, const UStruct* InFromClass, const bool bInEditablePropertiesOnly)
-{
-	if(InFromClass)
-	{
-		CreateChildren(OutMostParentClass, *InFromClass, bInEditablePropertiesOnly);
-	}
 }
 
 void FPropertyPathNode::CreateChildren(const UStruct& InOutMostParentClass, const UStruct& InFromClass, const bool bInEditablePropertiesOnly)
@@ -250,11 +212,4 @@ void FPropertyPathNode::CreateChildren(const UStruct& InOutMostParentClass, cons
 		Children.Add(Child);
 		Child->Initialize(Property, InOutMostParentClass, AsWeak(), bInEditablePropertiesOnly, bIsEditable);
 	});
-}
-
-bool FPropertyPathNode::PassesFilter(const FString& FilterString) const
-{
-	return FilterString.IsEmpty() ||
-		PropertyName.Contains(FilterString) ||
-			Algo::AnyOf(Children, [&FilterString](const TSharedPtr<FPropertyPathNode>& Child){ return Child->PassesFilter(FilterString);});
 }
