@@ -9,6 +9,23 @@
 
 const FVisiblePropertyPaths FVisiblePropertyPaths::Invalid;
 
+bool FVisibleCustomProperties::Contains(const FName& PropertyName, const FName& PropertyCategory) const
+{
+	if(Properties.IsEmpty() && Categories.IsEmpty())
+	{
+		return true;
+	}
+	if (!PropertyName.IsNone() && Properties.Contains(PropertyName))
+	{
+		return true;
+	}
+	if (!PropertyCategory.IsNone() && Categories.Contains(PropertyCategory))
+	{
+		return true;
+	}
+	return false;
+}
+
 void FVisiblePropertyPaths::AddPath(const FString& PropertyPath)
 {
 	VisiblePropertyPaths.AddUnique(PropertyPath);
@@ -18,6 +35,11 @@ bool FVisiblePropertyPaths::Contains(const FPropertyAndParent& InProperty) const
 {
 	const FString PropertyPath = CreatePropertyPath(InProperty);
 	return HasMatchingPath(PropertyPath);
+}
+
+bool FVisiblePropertyPaths::ContainsCustomRow(const FName& PropertyName, const FName& PropertyCategory) const
+{
+	return VisibleCustomProperties.Contains(PropertyName, PropertyCategory);
 }
 
 bool FVisiblePropertyPaths::HasMatchingPathExact(const FString& PropertyPath) const

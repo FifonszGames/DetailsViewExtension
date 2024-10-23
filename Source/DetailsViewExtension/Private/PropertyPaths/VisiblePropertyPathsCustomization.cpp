@@ -53,6 +53,8 @@ void FVisiblePropertyPathsCustomization::CustomizeChildren(TSharedRef<IPropertyH
 			.PropertyHandle(InStructPropertyHandle)
 		]
 	];
+	
+	ChildBuilder.AddProperty(InStructPropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetVisibleCustomRowsName()).ToSharedRef());
 }
 
 #undef LOCTEXT_NAMESPACE

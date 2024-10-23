@@ -120,9 +120,6 @@ private:
 
 	FORCEINLINE bool GetIsPropertyEditingEnabled() const { return bIsPropertyEditingEnabled; }
 	
-	UPROPERTY(EditAnywhere, Category = "TypeView")
-	bool bShowCustomProperties;
-	
 	UPROPERTY(Transient)
 	TObjectPtr<const UStruct> InitialClass;
 

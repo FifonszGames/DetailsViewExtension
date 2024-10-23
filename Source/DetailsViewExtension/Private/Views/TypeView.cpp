@@ -36,7 +36,7 @@ TSet<FName> UTypeView::GetUpdatableMemberVariableNames() const
 
 bool UTypeView::IsCustomRowVisible(FName PropertyName, FName PropertyCategory) const
 {
-	return bShowCustomProperties;
+	return GetVisiblePropertyPaths().ContainsCustomRow(PropertyName, PropertyCategory);
 }
 
 void UTypeView::RefreshContentWidget()
