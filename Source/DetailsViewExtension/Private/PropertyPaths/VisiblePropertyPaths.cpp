@@ -163,11 +163,8 @@ void FPropertyPathNode::Initialize(const FProperty& InSourceProperty, const UStr
 	}
 	else if(const FObjectProperty* ObjectProperty = CastField<FObjectProperty>(&InSourceProperty))
 	{
-		if(const UClass* Class = ObjectProperty->PropertyClass)
-		{
-			SourceClass = Class;
-			bCreateChildren = false;
-		}
+		SourceClass = ObjectProperty->PropertyClass;
+		bCreateChildren = false;
 	}
 	if(bCreateChildren && SourceClass.IsValid())
 	{
