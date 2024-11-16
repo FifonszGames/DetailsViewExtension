@@ -26,9 +26,9 @@ class DETAILSVIEWEXTENSION_API UStructView : public UTypeView
 	GENERATED_BODY()
 	
 public:
-	UFUNCTION(BlueprintCallable, CustomThunk, meta=(CustomStructureParam="OutData", ExpandEnumAsExecs="OutOperationResult"))
+	UFUNCTION(BlueprintCallable, CustomThunk, Category="StructView", meta=(CustomStructureParam="OutData", ExpandEnumAsExecs="OutOperationResult"))
 	static void GetStructValue(const UStructView* InFromView, EOperationResult& OutOperationResult, int32& OutData);
-	UFUNCTION(BlueprintCallable, CustomThunk, meta=(CustomStructureParam="InSourceData", ExpandEnumAsExecs="OutOperationResult"))
+	UFUNCTION(BlueprintCallable, CustomThunk, Category="StructView", meta=(CustomStructureParam="InSourceData", ExpandEnumAsExecs="OutOperationResult"))
 	static void SetStructValue(const UStructView* InTargetView, EOperationResult& OutOperationResult, const int32& InSourceData);
 	
 private:

@@ -12,9 +12,9 @@ struct FVisibleCustomProperties
 	bool Contains(const FName& PropertyName, const FName& PropertyCategory) const;
 
 private:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="VisibleCustomProperties")
 	TArray<FString> Properties;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="VisibleCustomProperties")
 	TArray<FString> Categories;
 };
 
