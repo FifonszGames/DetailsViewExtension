@@ -22,6 +22,10 @@ namespace PropertyPathHelpers
 
 	TSharedPtr<IPropertyHandleArray> GetPathsHandleArray(const TSharedPtr<IPropertyHandle>& PropertyHandle);
 
+	FName GetFieldFName(const FField& InField, const bool bInAccountForDisplayNameMeta = false);
+	FString GetFieldNameString(const FField& InField, const bool bInAccountForDisplayNameMeta = false);
+	void ForeachProperty(const UStruct* InStruct, const TFunctionRef<void(const FProperty& Property)>& InAction, const EFieldIterationFlags InIterationFlags = EFieldIterationFlags::Default);
+
 	namespace Get
 	{
 		FPropertyEditorModule& PropertyEditor();

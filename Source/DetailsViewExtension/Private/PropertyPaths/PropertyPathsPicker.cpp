@@ -5,8 +5,6 @@
 #include "PropertyPaths/PropertyPathsHelpers.h"
 #include "Widgets/Input/SSearchBox.h"
 
-#define LOCTEXT_NAMESPACE "VisiblePropertyPathsCombo"
-
 void SPropertyPathsPicker::Construct(const FArguments& InArgs)
 {
 	if (!InArgs._PropertyHandle.IsValid() || !InArgs._ParentNode.IsValid())
@@ -210,5 +208,3 @@ void SPropertyPathsPicker::OnSelectAllClicked() const
 	PropertyPathHelpers::AddAllChildren(PropertyHandle, ParentNode);
 	PropertiesTreeWidget->RequestTreeRefresh();
 }
-
-#undef LOCTEXT_NAMESPACE

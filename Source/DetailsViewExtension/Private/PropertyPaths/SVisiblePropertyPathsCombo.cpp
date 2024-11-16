@@ -7,8 +7,6 @@
 #include "PropertyPaths/PropertyPathsHelpers.h"
 #include "PropertyPaths/PropertyPathsPicker.h"
 
-#define LOCTEXT_NAMESPACE "VisiblePropertyPathsCombo"
-
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
 void SVisiblePropertyPathsCombo::Construct(const FArguments& InArgs)
@@ -192,5 +190,3 @@ void SVisiblePropertyPathsCombo::OnPropertyValueChanged(const FPropertyChangedEv
 }
 
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION
-
-#undef LOCTEXT_NAMESPACE

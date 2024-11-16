@@ -6,18 +6,45 @@
 #include "PropertyPaths/VisiblePropertyPaths.h"
 #include "StructView.generated.h"
 
+UENUM()
+enum class ECopyMethod : uint8
+{
+	FromViewToData,
+	FromDataToView
+};
+
+UENUM()
+enum class EOperationResult : uint8
+{
+	Success,
+	Failure
+};
+
 UCLASS()
 class DETAILSVIEWEXTENSION_API UStructView : public UTypeView
 {
 	GENERATED_BODY()
+	
+public:
+	UFUNCTION(BlueprintCallable, CustomThunk, meta=(CustomStructureParam="OutData", ExpandEnumAsExecs="OutOperationResult"))
+	static void GetStructValue(const UStructView* InFromView, EOperationResult& OutOperationResult, int32& OutData);
+	UFUNCTION(BlueprintCallable, CustomThunk, meta=(CustomStructureParam="InSourceData", ExpandEnumAsExecs="OutOperationResult"))
+	static void SetStructValue(const UStructView* InTargetView, EOperationResult& OutOperationResult, const int32& InSourceData);
+	
+private:
+	DECLARE_FUNCTION(execGetStructValue);
+	DECLARE_FUNCTION(execSetStructValue);
+	
+	static void ExecuteStructCopying(const UObject* Context, FFrame& Stack, ECopyMethod InCopyMethod);
+	static bool AreMatchingTypes(const UScriptStruct* InFirstType, const UScriptStruct* InSecondType);
+	
 public:
 	UFUNCTION(BlueprintCallable, Category="StructView")
 	void SetStructType(const UScriptStruct* InNewStructType);
-	
-	const UScriptStruct* GetSourceStruct() const { return StructPropertyPaths.GetSourceClass(); }
-	
 	UFUNCTION(BlueprintCallable, Category="StructView")
 	void ResetStructValue();
+	
+	const UScriptStruct* GetSourceStruct() const { return StructPropertyPaths.GetSourceClass(); }
 	
 	template<typename StructType>
 	const StructType* GetData() const

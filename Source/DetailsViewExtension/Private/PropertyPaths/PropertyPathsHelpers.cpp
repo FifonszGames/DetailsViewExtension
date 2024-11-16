@@ -1,6 +1,5 @@
 ﻿// Copyright FifonszGames. All Rights Reserved.
 
-
 #include "PropertyPaths/PropertyPathsHelpers.h"
 #include "PropertyPaths/VisiblePropertyPaths.h"
 
@@ -125,6 +124,35 @@ namespace PropertyPathHelpers
 	{
 		TSharedPtr<IPropertyHandle> Handle = PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetPathsPropertyName());
 		return Handle.IsValid() ? Handle->AsArray() : nullptr;
+	}
+
+	FName GetFieldFName(const FField& InField, const bool bInAccountForDisplayNameMeta)
+	{
+		if(bInAccountForDisplayNameMeta)
+		{
+			const FString* DisplayName = InField.FindMetaData(PropertyPathHelpers::Get::Meta::DisplayName());
+			if(DisplayName && !DisplayName->IsEmpty())
+			{
+				return FName(*DisplayName);	
+			}
+		}
+		return InField.GetFName();
+	}
+
+	FString GetFieldNameString(const FField& InField, const bool bInAccountForDisplayNameMeta)
+	{
+		return GetFieldFName(InField, bInAccountForDisplayNameMeta).ToString();
+	}
+
+	void ForeachProperty(const UStruct* InStruct, const TFunctionRef<void(const FProperty& Property)>& InAction, const EFieldIterationFlags InIterationFlags)
+	{
+		for (TFieldIterator<FProperty> PropIt(InStruct, InIterationFlags); PropIt; ++PropIt)
+		{
+			if(const FProperty* Property = *PropIt)
+			{
+				InAction(*Property);
+			}
+		}
 	}
 
 	FPropertyEditorModule& Get::PropertyEditor()

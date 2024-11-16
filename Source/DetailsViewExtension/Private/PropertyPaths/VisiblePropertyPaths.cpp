@@ -2,7 +2,6 @@
 
 #include "PropertyPaths/VisiblePropertyPaths.h"
 
-#include "DetailsViewExtensionLibrary.h"
 #include "Algo/AnyOf.h"
 #include "Editor/PropertyEditor/Public/PropertyEditorModule.h"
 #include "PropertyPaths/PropertyPathsHelpers.h"
@@ -87,7 +86,7 @@ void FPropertyPathNode::Initialize(const TSharedRef<IPropertyHandle>& SourceHand
 	SourceHandle->GetValue(Value);
 	if(const UStruct* Class = Cast<UStruct>(Value))
 	{
-		PropertyName = UDetailsViewExtensionLibrary::GetFieldNameString(*SourceHandle->GetProperty(), true);
+		PropertyName = PropertyPathHelpers::GetFieldNameString(*SourceHandle->GetProperty(), true);
 		SourceClass = Class;
 		CreateChildren(*Class, *Class, bEditablePropertiesOnly);
 	}
@@ -149,7 +148,7 @@ void FPropertyPathNode::Initialize(const FProperty& InSourceProperty, const UStr
 {
 	bIsEditableProperty = bInIsEditable;
 	Parent = InParent;
-	PropertyName = UDetailsViewExtensionLibrary::GetFieldNameString(InSourceProperty, true);
+	PropertyName = PropertyPathHelpers::GetFieldNameString(InSourceProperty, true);
 	
 	bool bCreateChildren = !InSourceProperty.HasAnyPropertyFlags(CPF_TObjectPtr | CPF_UObjectWrapper);
 	if(const FStructProperty* StructProperty = CastField<FStructProperty>(&InSourceProperty))
@@ -197,7 +196,7 @@ void FPropertyPathNode::CreateChildren(const UStruct& InOutMostParentClass, cons
 		return;
 	}
 	
-	UDetailsViewExtensionLibrary::ForeachProperty(&InFromClass, [this, &InOutMostParentClass, bInEditablePropertiesOnly](const FProperty& Property)
+	PropertyPathHelpers::ForeachProperty(&InFromClass, [this, &InOutMostParentClass, bInEditablePropertiesOnly](const FProperty& Property)
 	{
 		const bool bIsEditable = Property.HasAnyPropertyFlags(CPF_Edit);
 		if(bInEditablePropertiesOnly && !bIsEditable)

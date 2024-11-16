@@ -7,8 +7,6 @@
 #include "PropertyPaths/SVisiblePropertyPathsCombo.h"
 #include "PropertyPaths/VisiblePropertyPaths.h"
 
-#define LOCTEXT_NAMESPACE "MyStructCustomization"
-
 FVisiblePropertyPathsCustomization::FVisiblePropertyPathsCustomization()
 {
 }
@@ -56,5 +54,3 @@ void FVisiblePropertyPathsCustomization::CustomizeChildren(TSharedRef<IPropertyH
 	
 	ChildBuilder.AddProperty(InStructPropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetVisibleCustomRowsName()).ToSharedRef());
 }
-
-#undef LOCTEXT_NAMESPACE
