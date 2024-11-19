@@ -8,16 +8,18 @@
 	"CreatedBy": "FifonszGames",
 	"CreatedByURL": "https://dev.epicgames.com/community/profile/ojpzG/FifonszGames",
 	"DocsURL": "https://fifonsz-games.notion.site/Details-View-Extension-Plugin-Docs-11ed59546335801a9568c205c4518b52",
-	"MarketplaceURL": "",
+	"MarketplaceURL": "com.epicgames.launcher://ue/Fab/product/4fbba545-d255-4289-bc71-b97fc04e5bac",
 	"CanContainContent": false,
 	"IsBetaVersion": true,
 	"IsExperimentalVersion": false,
 	"Installed": false,
+	"EngineVersion": "5.5",
 	"Modules": [
 		{
 			"Name": "DetailsViewExtension",
 			"Type": "Editor",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [ "Win64" ]
 		}
 	]
 }
