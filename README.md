@@ -3,3 +3,5 @@
 Unreal Engine editor plugin that makes creating editor utility widgets easier by providing functionality to create detail view’s of struct or classes.
 
 For more detailed documentation, please visit:  [Official Documentation](https://fifonsz-games.notion.site/Details-View-Extension-Plugin-Docs-11ed59546335801a9568c205c4518b52)
+
+Main branch is always for the latest supported Unreal Engine version. Check out other branches for previous ones.
