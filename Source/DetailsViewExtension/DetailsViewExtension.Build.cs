@@ -20,7 +20,9 @@ public class DetailsViewExtension : ModuleRules
 			"UMG",
 			"InputCore",
 			"UnrealEd",
-			"PropertyEditor"
+			"PropertyEditor",
+			"ClassViewer",
+			"StructViewer"
 		});
 	}
 }

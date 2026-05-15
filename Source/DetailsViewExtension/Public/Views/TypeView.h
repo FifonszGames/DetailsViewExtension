@@ -1,6 +1,4 @@
-﻿// Copyright FifonszGames. All Rights Reserved.
-
-#pragma once
+﻿#pragma once
 
 #include "Components/Widget.h"
 #include "PropertyPaths/VisiblePropertyPaths.h"
@@ -75,10 +73,15 @@ public:
 protected:
 	FDetailsViewArgs CreateDetailsViewArgs();
 
-	virtual TSharedRef<SWidget> CreateContentWidget() PURE_VIRTUAL(UTypeViewBase::GetContentWidget,return SNullWidget::NullWidget;)
+	virtual TSharedRef<SWidget> CreateContentWidget() PURE_VIRTUAL(UTypeViewBase::GetContentWidget,
+		return SNullWidget::NullWidget;)
+
 	virtual IDetailsView* GetDetailsView() const PURE_VIRTUAL(UTypeViewBase::GetDetailsView, return nullptr;)
 	virtual const UStruct* GetViewType() const PURE_VIRTUAL(UTypeViewBase::GetViewType, return nullptr;)
-	virtual const FVisiblePropertyPaths& GetVisiblePropertyPaths() const PURE_VIRTUAL(UTypeViewBase::GetVisiblePropertyPaths, return FVisiblePropertyPaths::Invalid;)
+
+	virtual const FVisiblePropertyPaths& GetVisiblePropertyPaths() const PURE_VIRTUAL(
+		UTypeViewBase::GetVisiblePropertyPaths, return FVisiblePropertyPaths::Invalid;)
+
 	virtual TSet<FName> GetUpdatableMemberVariableNames() const;
 
 	bool GetIsPropertyVisible(const FPropertyAndParent& InPropertyAndParent) const;
@@ -88,20 +91,20 @@ protected:
 
 public:
 	//~ UObject interface
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+	void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+	void PostInitProperties() override;
 	//~ End of UObject interface
 
 	//~ FNotifyHook interface
-	virtual void NotifyPostChange(const FPropertyChangedEvent& PropertyChangedEvent, FProperty* PropertyThatChanged) override;
+	void NotifyPostChange(const FPropertyChangedEvent& PropertyChangedEvent, FProperty* PropertyThatChanged) override;
 	//~ End of FNotifyHook interface
 
 	//~ UWidget interface
-	virtual void ReleaseSlateResources(bool bReleaseChildren) override;
-	virtual const FText GetPaletteCategory() override;
+	void ReleaseSlateResources(bool bReleaseChildren) override;
+	const FText GetPaletteCategory() override;
 
 protected:
-	virtual TSharedRef<SWidget> RebuildWidget() override;
-	virtual void PostInitProperties() override;
+	TSharedRef<SWidget> RebuildWidget() override;
 	//~ End of UWidget interface
 
 	void TryForceRefresh() const;
@@ -110,16 +113,16 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "TypeView", BlueprintReadWrite)
 	FDetailsViewParameters DetailsViewParameters;
-	
+
 private:
 	bool IsCustomRowVisible(FName PropertyName, FName PropertyCategory) const;
-	
+
 	void RefreshContentWidget();
 	void RefreshContentWidgetAfterTimer();
 	bool GetPropertyPath(FName InPropertyName, FPropertyPath& OutPath) const;
 
 	FORCEINLINE bool GetIsPropertyEditingEnabled() const { return bIsPropertyEditingEnabled; }
-	
+
 	UPROPERTY(Transient)
 	TObjectPtr<const UStruct> InitialClass;
 
