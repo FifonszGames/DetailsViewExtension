@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿// Copyright FifonszGames All Rights Reserved.
+
+#pragma once
 
 #include "Components/Widget.h"
 #include "PropertyPaths/VisiblePropertyPaths.h"
@@ -71,18 +73,16 @@ public:
 	void SetIsPropertyEditingEnabled(const bool bInIsEnabled) { bIsPropertyEditingEnabled = bInIsEnabled; }
 
 protected:
-	FDetailsViewArgs CreateDetailsViewArgs();
-
-	virtual TSharedRef<SWidget> CreateContentWidget() PURE_VIRTUAL(UTypeViewBase::GetContentWidget,
-		return SNullWidget::NullWidget;)
-
-	virtual IDetailsView* GetDetailsView() const PURE_VIRTUAL(UTypeViewBase::GetDetailsView, return nullptr;)
-	virtual const UStruct* GetViewType() const PURE_VIRTUAL(UTypeViewBase::GetViewType, return nullptr;)
+	virtual TSharedRef<SWidget> CreateContentWidget() PURE_VIRTUAL(UTypeView::GetContentWidget, return SNullWidget::NullWidget;)
+	virtual IDetailsView* GetDetailsView() const PURE_VIRTUAL(UTypeView::GetDetailsView, return nullptr;)
+	virtual const UStruct* GetViewType() const PURE_VIRTUAL(UTypeView::GetViewType, return nullptr;)
 
 	virtual const FVisiblePropertyPaths& GetVisiblePropertyPaths() const PURE_VIRTUAL(
-		UTypeViewBase::GetVisiblePropertyPaths, return FVisiblePropertyPaths::Invalid;)
+		UTypeView::GetVisiblePropertyPaths, return FVisiblePropertyPaths::Invalid;)
 
 	virtual TSet<FName> GetUpdatableMemberVariableNames() const;
+
+	FDetailsViewArgs CreateDetailsViewArgs();
 
 	bool GetIsPropertyVisible(const FPropertyAndParent& InPropertyAndParent) const;
 

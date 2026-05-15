@@ -1,4 +1,6 @@
-﻿#include "PropertyPaths/PropertyPathsHelpers.h"
+﻿// Copyright FifonszGames All Rights Reserved.
+
+#include "PropertyPaths/PropertyPathsHelpers.h"
 #include "PropertyPaths/VisiblePropertyPaths.h"
 
 namespace PropertyPathHelpers

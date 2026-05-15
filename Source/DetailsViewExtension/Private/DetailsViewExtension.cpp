@@ -1,10 +1,10 @@
-﻿#include "DetailsViewExtension.h"
+﻿// Copyright FifonszGames. All Rights Reserved.
+
+#include "DetailsViewExtension.h"
 
 #include "PropertyPaths/PropertyPathsHelpers.h"
 #include "PropertyPaths/VisiblePropertyPaths.h"
 #include "PropertyPaths/VisiblePropertyPathsCustomization.h"
-
-#define LOCTEXT_NAMESPACE "FDetailsViewExtensionModule"
 
 void FDetailsViewExtensionModule::StartupModule()
 {
@@ -23,7 +23,5 @@ void FDetailsViewExtensionModule::ShutdownModule()
 	PropertyModule.UnregisterCustomPropertyTypeLayout(FStructPropertyPaths::StaticStruct()->GetFName());
 	PropertyModule.UnregisterCustomPropertyTypeLayout(FClassPropertyPaths::StaticStruct()->GetFName());
 }
-
-#undef LOCTEXT_NAMESPACE
 
 IMPLEMENT_MODULE(FDetailsViewExtensionModule, DetailsViewExtension)

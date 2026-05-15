@@ -1,19 +1,21 @@
-﻿#pragma once
+﻿// Copyright FifonszGames All Rights Reserved.
+
+#pragma once
 
 #include "CoreMinimal.h"
 #include "ClassViewerFilter.h"
 #include "StructViewerFilter.h"
 
-namespace PropertyPathsFilterUtils
+namespace PropertyPathsTypeFilterUtils
 {
 	constexpr EClassFlags DefaultFilteredClassFlags = CLASS_Abstract | CLASS_Deprecated | CLASS_Interface | CLASS_Hidden;
 }
 
-class FPropertyPathsClassFilter final : public IClassViewerFilter
+class FPropertyPathsTypeFilter final : public IClassViewerFilter
 {
 public:
-	explicit FPropertyPathsClassFilter(const TSharedRef<IPropertyHandle> InPropertyPathHandle,
-		EClassFlags InFilteredClassFlags = PropertyPathsFilterUtils::DefaultFilteredClassFlags) :
+	explicit FPropertyPathsTypeFilter(const TSharedRef<IPropertyHandle> InPropertyPathHandle,
+		EClassFlags InFilteredClassFlags = PropertyPathsTypeFilterUtils::DefaultFilteredClassFlags) :
 		PropertyPathHandle(InPropertyPathHandle), FilteredClassFlags(MoveTemp(InFilteredClassFlags))
 	{
 	}
@@ -34,8 +36,8 @@ private:
 class FPropertyPathsStructFilter final : public IStructViewerFilter
 {
 public:
-	explicit FPropertyPathsStructFilter(const TSharedRef<IPropertyHandle> InPropertyPathHandle) : PropertyPathHandle(
-		InPropertyPathHandle)
+	explicit FPropertyPathsStructFilter(const TSharedRef<IPropertyHandle> InPropertyPathHandle)
+		: PropertyPathHandle(InPropertyPathHandle)
 	{
 	}
 

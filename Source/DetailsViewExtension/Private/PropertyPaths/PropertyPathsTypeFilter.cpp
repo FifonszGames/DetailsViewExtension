@@ -1,10 +1,11 @@
-﻿#include "PropertyPaths/PropertyPathsClassFilter.h"
+﻿// Copyright FifonszGames All Rights Reserved.
+
+#include "PropertyPaths/PropertyPathsTypeFilter.h"
 
 #include "PropertyPaths/PropertyPathsHelpers.h"
 #include "PropertyPaths/VisiblePropertyPaths.h"
 
-
-namespace PropertyPathsFilterUtils
+namespace PropertyPathsTypeFilterUtils
 {
 	bool HasAnyProperties(const UStruct* InStruct, const TSharedRef<IPropertyHandle> PropertyPathHandle)
 	{
@@ -22,13 +23,13 @@ namespace PropertyPathsFilterUtils
 	}
 }
 
-bool FPropertyPathsClassFilter::IsClassAllowed(const FClassViewerInitializationOptions& InInitOptions,
+bool FPropertyPathsTypeFilter::IsClassAllowed(const FClassViewerInitializationOptions& InInitOptions,
 	const UClass* InClass, TSharedRef<FClassViewerFilterFuncs> InFilterFuncs)
 {
-	return PropertyPathsFilterUtils::HasAnyProperties(InClass, PropertyPathHandle);
+	return PropertyPathsTypeFilterUtils::HasAnyProperties(InClass, PropertyPathHandle);
 }
 
-bool FPropertyPathsClassFilter::IsUnloadedClassAllowed(const FClassViewerInitializationOptions& InInitOptions, const TSharedRef<const IUnloadedBlueprintData> InUnloadedClassData, TSharedRef<FClassViewerFilterFuncs> InFilterFuncs)
+bool FPropertyPathsTypeFilter::IsUnloadedClassAllowed(const FClassViewerInitializationOptions& InInitOptions, const TSharedRef<const IUnloadedBlueprintData> InUnloadedClassData, TSharedRef<FClassViewerFilterFuncs> InFilterFuncs)
 {
 	return !InUnloadedClassData->HasAnyClassFlags(FilteredClassFlags);
 }
@@ -36,5 +37,5 @@ bool FPropertyPathsClassFilter::IsUnloadedClassAllowed(const FClassViewerInitial
 bool FPropertyPathsStructFilter::IsStructAllowed(const FStructViewerInitializationOptions& InInitOptions,
 	const UScriptStruct* InStruct, TSharedRef<FStructViewerFilterFuncs> InFilterFuncs)
 {
-	return !InStruct->IsStructTrashed() && PropertyPathsFilterUtils::HasAnyProperties(InStruct, PropertyPathHandle);
+	return !InStruct->IsStructTrashed() && PropertyPathsTypeFilterUtils::HasAnyProperties(InStruct, PropertyPathHandle);
 }

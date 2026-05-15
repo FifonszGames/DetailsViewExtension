@@ -6,8 +6,7 @@
 #include "PropertyPaths/PropertyPathChip.h"
 #include "PropertyPaths/PropertyPathsHelpers.h"
 #include "PropertyPaths/PropertyPathsPicker.h"
-
-BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
+#include "PropertyPaths/VisiblePropertyPaths.h"
 
 void SVisiblePropertyPathsCombo::Construct(const FArguments& InArgs)
 {
@@ -99,6 +98,12 @@ void SVisiblePropertyPathsCombo::InitializeParentNode(const TSharedRef<IProperty
 	ParentNode->Initialize(ClassPropHandle, bEditablePropertiesOnly);
 }
 
+void SVisiblePropertyPathsCombo::InitializeParentNode()
+{
+	TSharedPtr<IPropertyHandle> ClassPropHandle = PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetClassPropertyName());
+	InitializeParentNode(ClassPropHandle.ToSharedRef());
+}
+
 EPropertyPathChipState SVisiblePropertyPathsCombo::GetChipState(const FString& InForPath) const
 {
 	TSharedPtr<FPropertyPathNode> PropertyNode = ParentNode->GetPropertyByPath(*InForPath);
@@ -110,14 +115,14 @@ TSharedRef<ITableRow> SVisiblePropertyPathsCombo::MakePropertyPathListViewRow(TS
 	const EPropertyPathChipState State = GetChipState(*Item);
 	
 	return SNew(STableRow<TSharedPtr<FString>>, TableViewBase)
-	.Style(&FAppStyle::Get().GetWidgetStyle<FTableRowStyle>("SimpleTableView.Row"))
-	.Padding(FMargin(0,2))
-	[
-		SNew(SPropertyPathChip)
-		.ChipText(FText::FromString(*Item))
-		.ChipState(State)
-		.OnClearPressed(this, &SVisiblePropertyPathsCombo::OnClearPathClicked, *Item.Get())
-	];
+		.Style(&FAppStyle::Get().GetWidgetStyle<FTableRowStyle>("SimpleTableView.Row"))
+		.Padding(FMargin(0,2))
+		[
+			SNew(SPropertyPathChip)
+			.ChipText(FText::FromString(*Item))
+			.ChipState(State)
+			.OnClearPressed(this, &SVisiblePropertyPathsCombo::OnClearPathClicked, *Item.Get())
+		];
 }
 
 TSharedRef<SWidget> SVisiblePropertyPathsCombo::OnGetMenuContent()
@@ -151,12 +156,6 @@ bool SVisiblePropertyPathsCombo::IsValueEnabled() const
 	return PropertyHandle.IsValid();
 }
 
-void SVisiblePropertyPathsCombo::InitializeParentNode()
-{
-	TSharedPtr<IPropertyHandle> ClassPropHandle = PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetClassPropertyName());
-	InitializeParentNode(ClassPropHandle.ToSharedRef());
-}
-
 void SVisiblePropertyPathsCombo::OnPropertyValueChanged(const FPropertyChangedEvent& InEvent)
 {
 	if(FVisiblePropertyPaths::GetPathsPropertyName() == InEvent.GetPropertyName())
@@ -188,5 +187,3 @@ void SVisiblePropertyPathsCombo::OnPropertyValueChanged(const FPropertyChangedEv
 		PropertyPathsListView->RebuildList();
 	}
 }
-
-END_SLATE_FUNCTION_BUILD_OPTIMIZATION

@@ -1,4 +1,7 @@
-﻿#pragma once
+﻿// Copyright FifonszGames All Rights Reserved.
+
+#pragma once
+
 #include "ClassViewerModule.h"
 #include "StructViewerModule.h"
 

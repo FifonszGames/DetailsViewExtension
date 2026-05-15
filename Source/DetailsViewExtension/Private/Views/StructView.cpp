@@ -1,4 +1,4 @@
-﻿// Copyright FifonszGames. All Rights Reserved.
+﻿// Copyright FifonszGames All Rights Reserved.
 
 #include "Views/StructView.h"
 
@@ -13,15 +13,15 @@ void UStructView::GetStructValue(const UStructView* InFromView, EOperationResult
 	checkNoEntry();
 }
 
-DEFINE_FUNCTION(UStructView::execGetStructValue)
-{
-	ExecuteStructCopying(Context, Stack, ECopyMethod::FromViewToData);
-}
-
 void UStructView::SetStructValue(const UStructView* InTargetView, EOperationResult& OutOperationResult, const int32& InSourceData)
 {
 	// We should never hit this!
 	checkNoEntry();
+}
+
+DEFINE_FUNCTION(UStructView::execGetStructValue)
+{
+	ExecuteStructCopying(Context, Stack, ECopyMethod::FromViewToData);
 }
 
 DEFINE_FUNCTION(UStructView::execSetStructValue)
@@ -29,7 +29,7 @@ DEFINE_FUNCTION(UStructView::execSetStructValue)
 	ExecuteStructCopying(Context, Stack, ECopyMethod::FromDataToView);
 }
 
-void UStructView::ExecuteStructCopying(const UObject* Context, FFrame& Stack, ECopyMethod InCopyMethod)
+void UStructView::ExecuteStructCopying(const UObject* Context, FFrame& Stack, const ECopyMethod InCopyMethod)
 {
 	P_GET_OBJECT(UStructView, InTargetView);
 	P_GET_ENUM_REF(EOperationResult, OutOperationResult);
@@ -37,7 +37,7 @@ void UStructView::ExecuteStructCopying(const UObject* Context, FFrame& Stack, EC
 	Stack.MostRecentPropertyAddress = nullptr;
 	Stack.MostRecentPropertyContainer = nullptr;
 	Stack.StepCompiledIn<FStructProperty>(nullptr);
-	
+
 	const FStructProperty* ValueProp = CastField<FStructProperty>(Stack.MostRecentProperty);
 	void* ValuePtr = Stack.MostRecentPropertyAddress;
 
@@ -47,23 +47,23 @@ void UStructView::ExecuteStructCopying(const UObject* Context, FFrame& Stack, EC
 
 	if (!ValueProp || !ValuePtr || !InTargetView || !InTargetView->GetSourceStruct())
 	{
-		const FBlueprintExceptionInfo ExceptionInfo(EBlueprintExceptionType::AccessViolation,FText::FromString(TEXT("Failed to resolve the value")));
+		const FBlueprintExceptionInfo ExceptionInfo(EBlueprintExceptionType::AccessViolation, FText::FromString(TEXT("Failed to resolve the value")));
 
 		FBlueprintCoreDelegates::ThrowScriptException(Context, Stack, ExceptionInfo);
 	}
 	else
 	{
 		const UScriptStruct* ValueType = ValueProp->Struct;
-		const UScriptStruct* StructViewType  = InTargetView->GetSourceStruct();
+		const UScriptStruct* StructViewType = InTargetView->GetSourceStruct();
 
-		if(AreMatchingTypes(ValueType, StructViewType))
+		if (AreMatchingTypes(ValueType, StructViewType))
 		{
 			P_NATIVE_BEGIN;
-			const void* SourceData = InCopyMethod == ECopyMethod::FromDataToView ? ValuePtr : InTargetView->GetStructMemory();
-			void* DestinationData = InCopyMethod == ECopyMethod::FromDataToView ? InTargetView->GetStructMemoryVolatile() : ValuePtr;
-			ValueType->CopyScriptStruct(DestinationData, SourceData);
-			OutOperationResult = EOperationResult::Success;
-			P_NATIVE_END;	
+				const void* SourceData = InCopyMethod == ECopyMethod::FromDataToView ? ValuePtr : InTargetView->GetStructMemory();
+				void* DestinationData = InCopyMethod == ECopyMethod::FromDataToView ? InTargetView->GetStructMemoryVolatile() : ValuePtr;
+				ValueType->CopyScriptStruct(DestinationData, SourceData);
+				OutOperationResult = EOperationResult::Success;
+			P_NATIVE_END;
 		}
 		else
 		{
@@ -72,7 +72,7 @@ void UStructView::ExecuteStructCopying(const UObject* Context, FFrame& Stack, EC
 				FText::FromString(FString::Printf(TEXT("Value type [%s] and struct view type [%s] are not matching types"),
 					ValueType ? *ValueType->GetName() : TEXT("Unknown output type"),
 					StructViewType ? *StructViewType->GetName() : TEXT("Unknown struct view type"))));
-			
+
 			FBlueprintCoreDelegates::ThrowScriptException(Context, Stack, ExceptionInfo);
 		}
 	}
@@ -85,7 +85,7 @@ bool UStructView::AreMatchingTypes(const UScriptStruct* InFirstType, const UScri
 
 void UStructView::SetStructType(const UScriptStruct* InNewStructType)
 {
-	if(InNewStructType != StructPropertyPaths.GetSourceClass())
+	if (InNewStructType != StructPropertyPaths.GetSourceClass())
 	{
 		StructPropertyPaths.SetSourceClass(InNewStructType);
 		ResetStructValue();
@@ -94,7 +94,7 @@ void UStructView::SetStructType(const UScriptStruct* InNewStructType)
 
 void UStructView::ResetStructValue()
 {
-	if(CurrentStruct.IsValid())
+	if (CurrentStruct.IsValid())
 	{
 		CurrentStruct->Reset();
 		CurrentStruct->Initialize(StructPropertyPaths.GetSourceClass());
@@ -103,7 +103,7 @@ void UStructView::ResetStructValue()
 	{
 		CurrentStruct = MakeShareable(new FStructOnScope(StructPropertyPaths.GetSourceClass()));
 	}
-	if(StructDetailsView)
+	if (StructDetailsView)
 	{
 		StructDetailsView->SetStructureData(CurrentStruct);
 	}
@@ -122,19 +122,19 @@ const UStruct* UStructView::GetViewType() const
 TSharedRef<SWidget> UStructView::CreateContentWidget()
 {
 	StructDetailsView.Reset();
-	
-	if(StructPropertyPaths.GetSourceClass())
+
+	if (StructPropertyPaths.GetSourceClass())
 	{
 		ResetStructValue();
-		
+
 		StructDetailsView = CreateStructureDetailView();
-		
+
 		if (StructDetailsView.IsValid())
 		{
 			return StructDetailsView->GetWidget().ToSharedRef();
 		}
 	}
-	
+
 	ResetCurrentStruct();
 	return SNew(STextBlock)
 		.Text(FText::FromString(FString::Printf(TEXT("Failed to create view. Check if struct in [%s] is empty!"), GET_MEMBER_NAME_STRING_CHECKED(UStructView, StructPropertyPaths))));
@@ -149,9 +149,9 @@ TSet<FName> UStructView::GetUpdatableMemberVariableNames() const
 
 void UStructView::TryUpdateOnPostEditChange(const FPropertyChangedEvent& PropertyChangedEvent)
 {
-	if(PropertyChangedEvent.GetPropertyName() == GET_MEMBER_NAME_CHECKED(UStructView, CustomName))
+	if (PropertyChangedEvent.GetPropertyName() == GET_MEMBER_NAME_CHECKED(UStructView, CustomName))
 	{
-		if(StructDetailsView.IsValid())
+		if (StructDetailsView.IsValid())
 		{
 			StructDetailsView->SetCustomName(CustomName);
 			TryForceRefresh();
@@ -163,16 +163,7 @@ void UStructView::TryUpdateOnPostEditChange(const FPropertyChangedEvent& Propert
 	}
 }
 
-void UStructView::ResetCurrentStruct()
-{
-	if(CurrentStruct.IsValid())
-	{
-		CurrentStruct->Reset();
-		CurrentStruct.Reset();
-	}
-}
-
-void UStructView::ReleaseSlateResources(bool bReleaseChildren)
+void UStructView::ReleaseSlateResources(const bool bReleaseChildren)
 {
 	Super::ReleaseSlateResources(bReleaseChildren);
 	StructDetailsView.Reset();
@@ -188,7 +179,7 @@ TSharedRef<IStructureDetailsView> UStructView::CreateStructureDetailView()
 		StructArgs.bShowClasses = true;
 		StructArgs.bShowInterfaces = true;
 	}
-	
+
 	//creating with nullptr for delegates to correctly register
 	FPropertyEditorModule& PropertyEditorModule = PropertyPathHelpers::Get::PropertyEditor();
 	TSharedRef<IStructureDetailsView> DetailsView = PropertyEditorModule.CreateStructureDetailView(
@@ -196,8 +187,17 @@ TSharedRef<IStructureDetailsView> UStructView::CreateStructureDetailView()
 		StructArgs,
 		nullptr,
 		CustomName);
-	
+
 	DetailsView->GetDetailsView()->SetIsPropertyVisibleDelegate(FIsPropertyVisible::CreateUObject(this, &UStructView::GetIsPropertyVisible));
 	DetailsView->SetStructureData(CurrentStruct);
 	return DetailsView;
+}
+
+void UStructView::ResetCurrentStruct()
+{
+	if (CurrentStruct.IsValid())
+	{
+		CurrentStruct->Reset();
+		CurrentStruct.Reset();
+	}
 }
