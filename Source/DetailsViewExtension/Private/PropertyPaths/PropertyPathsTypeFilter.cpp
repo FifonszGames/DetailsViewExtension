@@ -2,7 +2,7 @@
 
 #include "PropertyPaths/PropertyPathsTypeFilter.h"
 
-#include "PropertyPaths/PropertyPathsHelpers.h"
+#include "DetailsViewExtensionUtils.h"
 #include "PropertyPaths/VisiblePropertyPaths.h"
 
 namespace PropertyPathsTypeFilterUtils
@@ -12,7 +12,7 @@ namespace PropertyPathsTypeFilterUtils
 		bool bHasProperties = false;
 		bool bInEditableOnly = false;
 		PropertyPathHandle->GetChildHandle(FVisiblePropertyPaths::GetEditablePropertiesOnlyName())->GetValue(bInEditableOnly);
-		PropertyPathHelpers::ForeachProperty(InStruct, [bInEditableOnly, &bHasProperties](const FProperty& Property)
+		DetailsViewExtensionUtils::ForeachProperty(InStruct, [bInEditableOnly, &bHasProperties](const FProperty& Property)
 		{
 			if (!bInEditableOnly || Property.HasAnyPropertyFlags(CPF_Edit))
 			{

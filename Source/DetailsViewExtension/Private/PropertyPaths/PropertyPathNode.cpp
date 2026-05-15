@@ -2,6 +2,7 @@
 
 #include "PropertyPaths/PropertyPathNode.h"
 
+#include "DetailsViewExtensionUtils.h"
 #include "Algo/AnyOf.h"
 #include "PropertyPaths/PropertyPathsHelpers.h"
 
@@ -13,7 +14,7 @@ void FPropertyPathNode::Initialize(const TSharedRef<IPropertyHandle>& SourceHand
 	SourceHandle->GetValue(Value);
 	if (const UStruct* Class = Cast<UStruct>(Value))
 	{
-		PropertyName = PropertyPathHelpers::GetFieldNameString(*SourceHandle->GetProperty(), true);
+		PropertyName = DetailsViewExtensionUtils::GetFieldNameString(*SourceHandle->GetProperty(), true);
 		SourceClass = Class;
 		CreateChildren(*Class, *Class, bEditablePropertiesOnly);
 	}
@@ -75,7 +76,7 @@ void FPropertyPathNode::Initialize(const FProperty& InSourceProperty, const UStr
 {
 	bIsEditableProperty = bInIsEditable;
 	Parent = InParent;
-	PropertyName = PropertyPathHelpers::GetFieldNameString(InSourceProperty, true);
+	PropertyName = DetailsViewExtensionUtils::GetFieldNameString(InSourceProperty, true);
 
 	bool bCreateChildren = !InSourceProperty.HasAnyPropertyFlags(CPF_TObjectPtr | CPF_UObjectWrapper);
 	if (const FStructProperty* StructProperty = CastField<FStructProperty>(&InSourceProperty))
@@ -83,7 +84,7 @@ void FPropertyPathNode::Initialize(const FProperty& InSourceProperty, const UStr
 		if (const UScriptStruct* Struct = StructProperty->Struct)
 		{
 			SourceClass = StructProperty->Struct;
-			const FPropertyEditorModule& PropertyModule = PropertyPathHelpers::Get::PropertyEditor();
+			const FPropertyEditorModule& PropertyModule = DetailsViewExtensionUtils::Get::PropertyEditor();
 			bCreateChildren = bCreateChildren && !PropertyModule.IsCustomizedStruct(Struct, {});
 		}
 	}
@@ -105,7 +106,7 @@ void FPropertyPathNode::CreateChildren(const UStruct& InOutMostParentClass, cons
 		return;
 	}
 
-	PropertyPathHelpers::ForeachProperty(&InFromClass, [this, &InOutMostParentClass, bInEditablePropertiesOnly](const FProperty& Property)
+	DetailsViewExtensionUtils::ForeachProperty(&InFromClass, [this, &InOutMostParentClass, bInEditablePropertiesOnly](const FProperty& Property)
 	{
 		const bool bIsEditable = Property.HasAnyPropertyFlags(CPF_Edit);
 		if (bInEditablePropertiesOnly && !bIsEditable)
@@ -123,7 +124,7 @@ void FPropertyPathNode::AppendPath(FString& OutPath) const
 {
 	if (Parent.IsValid())
 	{
-		OutPath.InsertAt(0, PropertyName + PropertyPathHelpers::Get::Separator());
+		OutPath.InsertAt(0, PropertyName + PropertyPathHelpers::Separator());
 		Parent.Pin()->AppendPath(OutPath);
 	}
 }

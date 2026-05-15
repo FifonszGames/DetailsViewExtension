@@ -2,10 +2,10 @@
 
 #include "Views/StructView.h"
 
+#include "DetailsViewExtensionUtils.h"
 #include "IStructureDetailsView.h"
 #include "PropertyEditorModule.h"
 #include "Blueprint/BlueprintExceptionInfo.h"
-#include "PropertyPaths/PropertyPathsHelpers.h"
 
 void UStructView::GetStructValue(const UStructView* InFromView, EOperationResult& OutOperationResult, int32& OutData)
 {
@@ -181,7 +181,7 @@ TSharedRef<IStructureDetailsView> UStructView::CreateStructureDetailView()
 	}
 
 	//creating with nullptr for delegates to correctly register
-	FPropertyEditorModule& PropertyEditorModule = PropertyPathHelpers::Get::PropertyEditor();
+	FPropertyEditorModule& PropertyEditorModule = DetailsViewExtensionUtils::Get::PropertyEditor();
 	TSharedRef<IStructureDetailsView> DetailsView = PropertyEditorModule.CreateStructureDetailView(
 		CreateDetailsViewArgs(),
 		StructArgs,

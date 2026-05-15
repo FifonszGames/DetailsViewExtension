@@ -2,13 +2,13 @@
 
 #include "DetailsViewExtension.h"
 
-#include "PropertyPaths/PropertyPathsHelpers.h"
+#include "DetailsViewExtensionUtils.h"
 #include "PropertyPaths/VisiblePropertyPaths.h"
 #include "PropertyPaths/VisiblePropertyPathsCustomization.h"
 
 void FDetailsViewExtensionModule::StartupModule()
 {
-	FPropertyEditorModule& PropertyModule = PropertyPathHelpers::Get::PropertyEditor();
+	FPropertyEditorModule& PropertyModule = DetailsViewExtensionUtils::Get::PropertyEditor();
 
 	PropertyModule.RegisterCustomPropertyTypeLayout(FStructPropertyPaths::StaticStruct()->GetFName(),
 		FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FStructPropertyPathsCustomization::MakeInstance));
@@ -18,7 +18,7 @@ void FDetailsViewExtensionModule::StartupModule()
 
 void FDetailsViewExtensionModule::ShutdownModule()
 {
-	FPropertyEditorModule& PropertyModule = PropertyPathHelpers::Get::PropertyEditor();
+	FPropertyEditorModule& PropertyModule = DetailsViewExtensionUtils::Get::PropertyEditor();
 
 	PropertyModule.UnregisterCustomPropertyTypeLayout(FStructPropertyPaths::StaticStruct()->GetFName());
 	PropertyModule.UnregisterCustomPropertyTypeLayout(FClassPropertyPaths::StaticStruct()->GetFName());

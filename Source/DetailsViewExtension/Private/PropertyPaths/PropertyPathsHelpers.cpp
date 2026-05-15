@@ -1,10 +1,20 @@
 ﻿// Copyright FifonszGames All Rights Reserved.
 
 #include "PropertyPaths/PropertyPathsHelpers.h"
+
+#include "DetailsViewExtensionUtils.h"
+#include "PropertyPaths/PropertyPathNode.h"
 #include "PropertyPaths/VisiblePropertyPaths.h"
 
 namespace PropertyPathHelpers
 {
+	TSharedPtr<IPropertyHandleArray> GetPathsHandleArray(const TSharedPtr<IPropertyHandle>& PropertyHandle)
+	{
+		const TSharedPtr<IPropertyHandle> Handle = PropertyHandle->GetChildHandle(
+			FVisiblePropertyPaths::GetPathsPropertyName());
+		return Handle.IsValid() ? Handle->AsArray() : nullptr;
+	}
+
 	void RemovePath(const TSharedPtr<IPropertyHandle>& PropertyHandle, const FString& InPath)
 	{
 		if (const FVisiblePropertyPaths* ValuePtr = GetPathsFromHandle(PropertyHandle))
@@ -76,8 +86,7 @@ namespace PropertyPathHelpers
 
 	const FVisiblePropertyPaths* GetPathsFromHandle(const TSharedPtr<IPropertyHandle>& InPropertyHandle)
 	{
-		return InPropertyHandle.IsValid() ? GetValueFromHandle<FVisiblePropertyPaths>(InPropertyHandle.ToSharedRef()) :
-		nullptr;
+		return InPropertyHandle.IsValid() ? DetailsViewExtensionUtils::GetValueFromHandle<FVisiblePropertyPaths>(InPropertyHandle.ToSharedRef()) : nullptr;
 	}
 
 	void RemoveAllPaths(const TSharedPtr<IPropertyHandle>& PropertyHandle)
@@ -111,61 +120,6 @@ namespace PropertyPathHelpers
 		{
 			const FString Path = PropertyPathNode->GetTotalPath();
 			AddPath(PathsArrayRef, Path);
-		}
-	}
-
-	TSharedPtr<IPropertyHandleArray> GetPathsHandleArray(const TSharedPtr<IPropertyHandle>& PropertyHandle)
-	{
-		const TSharedPtr<IPropertyHandle> Handle = PropertyHandle->GetChildHandle(
-			FVisiblePropertyPaths::GetPathsPropertyName());
-		return Handle.IsValid() ? Handle->AsArray() : nullptr;
-	}
-
-	FName GetFieldFName(const FField& InField, const bool bInAccountForDisplayNameMeta)
-	{
-		if (bInAccountForDisplayNameMeta)
-		{
-			const FString* DisplayName = InField.FindMetaData(Get::Meta::DisplayName());
-			if (DisplayName && !DisplayName->IsEmpty())
-			{
-				return FName(*DisplayName);
-			}
-		}
-		return InField.GetFName();
-	}
-
-	FString GetFieldNameString(const FField& InField, const bool bInAccountForDisplayNameMeta)
-	{
-		return GetFieldFName(InField, bInAccountForDisplayNameMeta).ToString();
-	}
-
-	void ForeachProperty(const UStruct* InStruct, const TFunctionRef<void(const FProperty& Property)>& InAction,
-		const EFieldIterationFlags InIterationFlags)
-	{
-		for (TFieldIterator<FProperty> PropIt(InStruct, InIterationFlags); PropIt; ++PropIt)
-		{
-			if (const FProperty* Property = *PropIt)
-			{
-				InAction(*Property);
-			}
-		}
-	}
-
-	namespace Get
-	{
-		FPropertyEditorModule& PropertyEditor()
-		{
-			return FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
-		}
-
-		FClassViewerModule& ClassViewer()
-		{
-			return FModuleManager::LoadModuleChecked<FClassViewerModule>("ClassViewer");
-		}
-
-		FStructViewerModule& StructViewer()
-		{
-			return FModuleManager::LoadModuleChecked<FStructViewerModule>("StructViewer");
 		}
 	}
 }

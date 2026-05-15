@@ -1,7 +1,8 @@
 ﻿// Copyright FifonszGames All Rights Reserved.
 
 #include "Views/ClassView.h"
-#include "PropertyPaths/PropertyPathsHelpers.h"
+
+#include "DetailsViewExtensionUtils.h"
 
 void UClassView::SetViewClass(const UClass* InNewClass)
 {
@@ -41,7 +42,7 @@ TSharedRef<SWidget> UClassView::CreateContentWidget()
 
 	if (const UClass* SourceClass = ClassPropertyPaths.GetSourceClass())
 	{
-		FPropertyEditorModule& PropertyEditorModule = PropertyPathHelpers::Get::PropertyEditor();
+		FPropertyEditorModule& PropertyEditorModule = DetailsViewExtensionUtils::Get::PropertyEditor();
 
 		FDetailsViewArgs DetailsViewArgs = CreateDetailsViewArgs();
 		DetailsViewArgs.bShowCustomFilterOption = false;

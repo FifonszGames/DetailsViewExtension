@@ -2,6 +2,7 @@
 
 #include "PropertyPaths/VisiblePropertyPaths.h"
 
+#include "DetailsViewExtensionUtils.h"
 #include "Editor/PropertyEditor/Public/PropertyEditorModule.h"
 #include "PropertyPaths/PropertyPathsHelpers.h"
 
@@ -49,7 +50,7 @@ FString FVisiblePropertyPaths::CreatePropertyPath(const FPropertyAndParent& InFr
 		const FProperty* ParentProperty = InFromProperty.ParentProperties[i];
 		if (ParentProperty && InFromProperty.ParentArrayIndices[i] < 0)
 		{
-			PropertyPath.Append(FString::Printf(TEXT("%s%s"), *GetPropertyName(*ParentProperty), *PropertyPathHelpers::Get::Separator()));
+			PropertyPath.Append(FString::Printf(TEXT("%s%s"), *DetailsViewExtensionUtils::GetFieldNameString(*ParentProperty, true), *PropertyPathHelpers::Separator()));
 			continue;
 		}
 		bWasBroken = true;
@@ -57,23 +58,11 @@ FString FVisiblePropertyPaths::CreatePropertyPath(const FPropertyAndParent& InFr
 	}
 	if (!bWasBroken && InFromProperty.ArrayIndex <= INDEX_NONE)
 	{
-		PropertyPath.Append(GetPropertyName(InFromProperty.Property));
+		PropertyPath.Append(DetailsViewExtensionUtils::GetFieldNameString(InFromProperty.Property, true));
 	}
 	else
 	{
 		PropertyPath.RemoveAt(PropertyPath.Len() - 1, 1);
 	}
 	return PropertyPath;
-}
-
-FString FVisiblePropertyPaths::GetPropertyName(const FProperty& InProperty, const bool bInAccountForDisplayMeta)
-{
-	if (bInAccountForDisplayMeta)
-	{
-		if (const FString* Meta = InProperty.FindMetaData(PropertyPathHelpers::Get::Meta::DisplayName()))
-		{
-			return *Meta;
-		}
-	}
-	return InProperty.GetName();
 }

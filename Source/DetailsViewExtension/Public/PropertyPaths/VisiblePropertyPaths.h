@@ -46,7 +46,6 @@ struct FVisiblePropertyPaths
 
 private:
 	static FString CreatePropertyPath(const FPropertyAndParent& InFromProperty);
-	static FString GetPropertyName(const FProperty& InProperty, const bool bInAccountForDisplayMeta = true);
 
 	UPROPERTY(EditAnywhere, Category="VisiblePropertyPaths")
 	TArray<FString> VisiblePropertyPaths;

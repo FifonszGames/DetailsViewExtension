@@ -2,8 +2,8 @@
 
 #include "Views/TypeView.h"
 
+#include "DetailsViewExtensionUtils.h"
 #include "PropertyPath.h"
-#include "PropertyPaths/PropertyPathsHelpers.h"
 
 FDetailsViewArgs FDetailsViewParameters::AsDetailsViewArgs() const
 {
@@ -220,7 +220,7 @@ bool UTypeView::GetPropertyPath(const FName InPropertyName, FPropertyPath& OutPa
 	{
 		for (FProperty* Property = Type->PropertyLink; Property != nullptr; Property = Property->PropertyLinkNext)
 		{
-			if (Property->GetFName() == InPropertyName || Property->GetMetaData(PropertyPathHelpers::Get::Meta::DisplayName()) == InPropertyName)
+			if (Property->GetFName() == InPropertyName || Property->GetMetaData(DetailsViewExtensionUtils::Get::Meta::DisplayName()) == InPropertyName)
 			{
 				OutPath = FPropertyPath::Create(Property).Get();
 				return OutPath.IsValid();

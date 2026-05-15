@@ -147,7 +147,7 @@ void SPropertyPathsPicker::OnPropertyPathCheckStatusChanged(const ECheckBoxState
 					PropertyPathHelpers::RemovePaths(PropertyHandle, PathsToRemove);
 
 					int32 Index = INDEX_NONE;
-					if (TotalPath.FindLastChar(PropertyPathHelpers::Get::SeparatorAsChar(), Index))
+					if (TotalPath.FindLastChar(PropertyPathHelpers::SeparatorAsChar(), Index))
 					{
 						const FString ChildPath = TotalPath.Left(Index);
 						if (!Paths->HasMatchingPath(ChildPath))
