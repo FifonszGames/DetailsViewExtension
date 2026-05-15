@@ -108,7 +108,7 @@ void SPropertyPathsPicker::OnFilterTextChanged(const FText& Text)
 	PropertiesTreeWidget->RequestTreeRefresh();
 }
 
-TSharedRef<ITableRow> SPropertyPathsPicker::OnGenerateRow(const TSharedPtr<FPropertyPathNode>& InItem, const TSharedRef<STableViewBase>& OwnerTable)
+TSharedRef<ITableRow> SPropertyPathsPicker::OnGenerateRow(const TSharedPtr<FPropertyPathNode> InItem, const TSharedRef<STableViewBase>& OwnerTable)
 {
 	return SNew(STableRow<TSharedPtr<FPropertyPathNode>>, OwnerTable)
 		.Style(FAppStyle::Get(), "GameplayTagTreeView")
@@ -126,7 +126,7 @@ TSharedRef<ITableRow> SPropertyPathsPicker::OnGenerateRow(const TSharedPtr<FProp
 		];
 }
 
-void SPropertyPathsPicker::OnPropertyPathCheckStatusChanged(const ECheckBoxState CheckBoxState, const TSharedPtr<FPropertyPathNode>& PropertyPathNode) const
+void SPropertyPathsPicker::OnPropertyPathCheckStatusChanged(const ECheckBoxState CheckBoxState, const TSharedPtr<FPropertyPathNode> PropertyPathNode) const
 {
 	if (!PropertyPathNode.IsValid())
 	{
@@ -172,7 +172,7 @@ void SPropertyPathsPicker::OnPropertyPathCheckStatusChanged(const ECheckBoxState
 	}
 }
 
-ECheckBoxState SPropertyPathsPicker::IsPropertyChecked(const TSharedPtr<FPropertyPathNode>& PropertyPathNode) const
+ECheckBoxState SPropertyPathsPicker::IsPropertyChecked(const TSharedPtr<FPropertyPathNode> PropertyPathNode) const
 {
 	if (!PropertyPathNode.IsValid())
 	{
@@ -183,7 +183,7 @@ ECheckBoxState SPropertyPathsPicker::IsPropertyChecked(const TSharedPtr<FPropert
 	return Paths && Paths->HasMatchingPath(PropertyPathNode->GetTotalPath()) ? ECheckBoxState::Checked : ECheckBoxState::Unchecked;
 }
 
-void SPropertyPathsPicker::OnGetChildren(const TSharedPtr<FPropertyPathNode>& InItem, TArray<TSharedPtr<FPropertyPathNode>>& OutChildren) const
+void SPropertyPathsPicker::OnGetChildren(const TSharedPtr<FPropertyPathNode> InItem, TArray<TSharedPtr<FPropertyPathNode>>& OutChildren) const
 {
 	OutChildren.Append(InItem->GetChildren(FilterString));
 }

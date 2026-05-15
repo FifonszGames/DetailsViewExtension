@@ -16,7 +16,7 @@
 
 namespace StructPropertyPathsCustomizationUtils
 {
-	TSharedRef<SWidget> GenerateStructPicker(const TSharedRef<IPropertyHandle> PropertyPathHandle, const TSharedRef<IPropertyHandle> StructTypeHandle)
+	TSharedRef<SWidget> GenerateStructPicker(const TSharedRef<IPropertyHandle> PropertyPathHandle, const TSharedRef<IPropertyHandle> StructTypeHandle, TSharedRef<SComboButton> Combo)
 	{
 		const bool bShowTreeView = StructTypeHandle->HasMetaData(PropertyPathHelpers::Get::Meta::ShowTreeView());
 
@@ -38,9 +38,10 @@ namespace StructPropertyPathsCustomizationUtils
 				.MaxHeight(500)
 				[
 					PropertyPathHelpers::Get::StructViewer().CreateStructViewer(Options,
-						FOnStructPicked::CreateLambda([StructTypeHandle](const UScriptStruct* SelectedStruct)
+						FOnStructPicked::CreateLambda([StructTypeHandle, Combo](const UScriptStruct* SelectedStruct)
 						{
 							StructTypeHandle->SetValue(SelectedStruct);
+							Combo->SetIsOpen(false);
 						}))
 				]
 			];
@@ -149,8 +150,7 @@ TSharedRef<SWidget> FStructPropertyPathsCustomization::CreateClassPropertyValueC
 	const TSharedRef<IPropertyHandle> ClassHandle = PropertyPathHandle->GetChildHandle(
 		FVisiblePropertyPaths::GetClassPropertyName()).ToSharedRef();
 
-	return SNew(SComboButton)
-		.OnGetMenuContent_Static(&StructPropertyPathsCustomizationUtils::GenerateStructPicker, PropertyPathHandle, ClassHandle)
+	TSharedRef<SComboButton> Combo = SNew(SComboButton)
 		.ContentPadding(0)
 		.IsEnabled(ClassHandle->IsEditable())
 		.ButtonContent()
@@ -173,4 +173,7 @@ TSharedRef<SWidget> FStructPropertyPathsCustomization::CreateClassPropertyValueC
 				.Font(IDetailLayoutBuilder::GetDetailFont())
 			]
 		];
+
+	Combo->SetOnGetMenuContent(FOnGetContent::CreateStatic(&StructPropertyPathsCustomizationUtils::GenerateStructPicker, PropertyPathHandle, ClassHandle, Combo));
+	return Combo;
 }

@@ -34,12 +34,12 @@ public:
 private:
 	void OnFilterTextChanged(const FText& Text);
 
-	TSharedRef<ITableRow> OnGenerateRow(const TSharedPtr<FPropertyPathNode>& InItem, const TSharedRef<STableViewBase>& OwnerTable);
+	TSharedRef<ITableRow> OnGenerateRow(TSharedPtr<FPropertyPathNode> InItem, const TSharedRef<STableViewBase>& OwnerTable);
 
-	void OnPropertyPathCheckStatusChanged(ECheckBoxState CheckBoxState, const TSharedPtr<FPropertyPathNode>& PropertyPathNode) const;
-	ECheckBoxState IsPropertyChecked(const TSharedPtr<FPropertyPathNode>& PropertyPathNode) const;
+	void OnPropertyPathCheckStatusChanged(ECheckBoxState CheckBoxState, TSharedPtr<FPropertyPathNode> PropertyPathNode) const;
+	ECheckBoxState IsPropertyChecked(TSharedPtr<FPropertyPathNode> PropertyPathNode) const;
 
-	void OnGetChildren(const TSharedPtr<FPropertyPathNode>& InItem, TArray<TSharedPtr<FPropertyPathNode>>& OutChildren) const;
+	void OnGetChildren(TSharedPtr<FPropertyPathNode> InItem, TArray<TSharedPtr<FPropertyPathNode>>& OutChildren) const;
 
 	void FillAllPathItems();
 
