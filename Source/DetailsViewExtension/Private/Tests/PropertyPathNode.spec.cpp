@@ -61,6 +61,14 @@ void FPropertyPathNodeSpec::Define()
 			const TSharedPtr<FPropertyPathNode> NamePropPathNode = Node->GetPropertyByPath(NamePropPath);
 			TestTrue("Editable internal name property node is valid", NamePropPathNode.IsValid());
 		});
+		
+		It("Should add outermost children only", [this]
+		{
+			TArray<TSharedPtr<FPropertyPathNode>> OutermostEditableChildren;
+			Node->FillWithOutermostChildren(OutermostEditableChildren);
+			constexpr int32 ExpectedChildrenNum = 4;
+			TestEqual("Number of outermost children", OutermostEditableChildren.Num(), ExpectedChildrenNum);
+		});
 	});
 
 	Describe("Non Editable-Only Tests", [this]

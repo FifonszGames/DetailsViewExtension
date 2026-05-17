@@ -113,7 +113,7 @@ namespace PropertyPathHelpers
 		}
 		const TSharedRef<IPropertyHandleArray> PathsArrayRef = PathsArray.ToSharedRef();
 		TArray<TSharedPtr<FPropertyPathNode>> OutItems;
-		ParentNode->FillWithOutmostChildren(OutItems);
+		ParentNode->FillWithOutermostChildren(OutItems);
 
 		PathsArrayRef->EmptyArray();
 		for (const TSharedPtr<FPropertyPathNode>& PropertyPathNode : OutItems)

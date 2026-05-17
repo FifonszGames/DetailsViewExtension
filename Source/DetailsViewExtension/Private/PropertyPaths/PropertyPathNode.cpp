@@ -33,7 +33,7 @@ TArray<TSharedPtr<FPropertyPathNode>> FPropertyPathNode::GetChildren(const FStri
 	});
 }
 
-void FPropertyPathNode::FillWithOutmostChildren(TArray<TSharedPtr<FPropertyPathNode>>& OutItems, const bool bIncludeSelf)
+void FPropertyPathNode::FillWithOutermostChildren(TArray<TSharedPtr<FPropertyPathNode>>& OutItems, const bool bIncludeSelf)
 {
 	if (bIncludeSelf)
 	{
@@ -42,7 +42,7 @@ void FPropertyPathNode::FillWithOutmostChildren(TArray<TSharedPtr<FPropertyPathN
 
 	for (const TSharedPtr<FPropertyPathNode>& Child : Children)
 	{
-		Child->FillWithOutmostChildren(OutItems, Child->GetChildren().IsEmpty());
+		Child->FillWithOutermostChildren(OutItems, Child->Children.IsEmpty());
 	}
 }
 

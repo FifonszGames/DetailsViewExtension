@@ -10,7 +10,7 @@ struct FPropertyPathNode : TSharedFromThis<FPropertyPathNode>
 	void Initialize(const UStruct& InSourceClass, FString InPropertyName, const bool bEditablePropertiesOnly);
 
 	TArray<TSharedPtr<FPropertyPathNode>> GetChildren(const FString& InFilterString = TEXT("")) const;
-	void FillWithOutmostChildren(TArray<TSharedPtr<FPropertyPathNode>>& OutItems, const bool bIncludeSelf = false);
+	void FillWithOutermostChildren(TArray<TSharedPtr<FPropertyPathNode>>& OutItems, const bool bIncludeSelf = false);
 
 	TSharedPtr<FPropertyPathNode> GetPropertyByPath(const FString& InPath, const bool bInCountSelf = false) const;
 	FString GetTotalPath() const;
