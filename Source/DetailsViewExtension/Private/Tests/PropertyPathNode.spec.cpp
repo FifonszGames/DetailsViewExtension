@@ -91,14 +91,67 @@ void FPropertyPathNodeSpec::Define()
 		});
 	});
 
-	Describe("Non Editable-Only Tests", [this]
+	Describe("Non-editable Tests", [this]
 	{
 		BeforeEach([this]
 		{
 			Node->Initialize(*FPropertyPathNodeTestStruct::StaticStruct(), TestPropertyName, false);
 		});
 
-		//TODO:: implement tests
+		It("Should return filtered children", [this]
+		{
+			TArray<TSharedPtr<FPropertyPathNode>> EditableChildren = Node->GetChildren();
+			int32 ExpectedChildrenNum = 5;
+			TestEqual("Num of children with empty filter", EditableChildren.Num(), ExpectedChildrenNum);
+
+			EditableChildren = Node->GetChildren(TEXT("editable"));
+			ExpectedChildrenNum = 5;
+			TestEqual("Num of children filtered by: editable", EditableChildren.Num(), ExpectedChildrenNum);
+
+			EditableChildren = Node->GetChildren(TEXT("struct"));
+			ExpectedChildrenNum = 1;
+			TestEqual("Num of children filtered by: struct", EditableChildren.Num(), ExpectedChildrenNum);
+
+			const TSharedPtr<FPropertyPathNode> EditableStructNode = EditableChildren[0];
+			EditableChildren = EditableStructNode->GetChildren();
+			ExpectedChildrenNum = 2;
+			TestEqual("Num of children filtered by: name, on child node", EditableChildren.Num(), ExpectedChildrenNum);
+		});
+
+		It("Should pass filters", [this]
+		{
+			TestTrue("Filter of non-editable child", Node->PassesFilter(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bNonEditableInt)));
+		});
+
+		It("Should return correct total path", [this]
+		{
+			const FString NonEditableIntName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bNonEditableInt);
+			const TArray<TSharedPtr<FPropertyPathNode>> Children = Node->GetChildren(NonEditableIntName);
+			const TSharedPtr<FPropertyPathNode> NonEditableIntNode = Children[0];
+
+			TestEqual("Root total path", Node->GetTotalPath(), TestPropertyName);
+			TestEqual("Root total path", NonEditableIntNode->GetTotalPath(), NonEditableIntName);
+		});
+
+		It("Should return correct node by path", [this]
+		{
+			const TSharedPtr<FPropertyPathNode> IntNode = Node->GetPropertyByPath(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bNonEditableInt));
+			TestTrue("Non-editable int node is valid", IntNode.IsValid());
+
+			const FString EditableStructPropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bEditableStruct);
+			const FString NonEditableNamePropFloat = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeInternalTestStruct, bNonEditableFloat);
+			const FString FloatPropPath = FString::Join(TArray{EditableStructPropName, NonEditableNamePropFloat}, *PropertyPathHelpers::Separator());
+			const TSharedPtr<FPropertyPathNode> FloatPropPathNode = Node->GetPropertyByPath(FloatPropPath);
+			TestTrue("Non-editable internal float property node is valid", FloatPropPathNode.IsValid());
+		});
+
+		It("Should add outermost children only", [this]
+		{
+			TArray<TSharedPtr<FPropertyPathNode>> OutermostEditableChildren;
+			Node->FillWithOutermostChildren(OutermostEditableChildren);
+			constexpr int32 ExpectedChildrenNum = 6;
+			TestEqual("Number of outermost children", OutermostEditableChildren.Num(), ExpectedChildrenNum);
+		});
 	});
 
 	AfterEach([this]
