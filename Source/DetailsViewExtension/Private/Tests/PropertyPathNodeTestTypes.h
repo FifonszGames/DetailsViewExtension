@@ -14,7 +14,7 @@ struct FPropertyPathNodeInternalTestStruct
 	FName bEditableName;
 
 	UPROPERTY()
-	float bNonEditableFloat = true;
+	float NonEditableFloat = 1.0f;
 };
 
 USTRUCT(NotBlueprintType, meta=(Abstract, Hidden))
@@ -35,5 +35,5 @@ struct FPropertyPathNodeTestStruct
 	FPropertyPathNodeInternalTestStruct bEditableStruct;
 
 	UPROPERTY()
-	int32 bNonEditableInt = true;
+	int32 NonEditableInt = 1;
 };
