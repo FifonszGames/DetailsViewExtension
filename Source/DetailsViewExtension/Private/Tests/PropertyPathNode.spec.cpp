@@ -55,11 +55,11 @@ void FPropertyPathNodeSpec::Define()
 			const TSharedPtr<FPropertyPathNode> IntNode = Node->GetPropertyByPath(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bNonEditableInt));
 			TestFalse("Non-editable int node is valid", IntNode.IsValid());
 			
-			// const FString EditableStructPropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bEditableStruct);
-			// const FString EditableNamePropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeInternalTestStruct, bEditableName);
-			// const FString NamePropPath = FString::Join(TArray{EditableStructPropName, EditableNamePropName}, *PropertyPathHelpers::Separator());
-			// const TSharedPtr<FPropertyPathNode> NamePropPathNode = Node->GetPropertyByPath(NamePropPath);
-			// TestTrue("Editable internal name property node is valid", NamePropPathNode.IsValid());
+			const FString EditableStructPropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bEditableStruct);
+			const FString EditableNamePropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeInternalTestStruct, bEditableName);
+			const FString NamePropPath = FString::Join(TArray{EditableStructPropName, EditableNamePropName}, *PropertyPathHelpers::Separator());
+			const TSharedPtr<FPropertyPathNode> NamePropPathNode = Node->GetPropertyByPath(NamePropPath);
+			TestTrue("Editable internal name property node is valid", NamePropPathNode.IsValid());
 		});
 	});
 

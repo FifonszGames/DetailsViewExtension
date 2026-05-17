@@ -142,9 +142,12 @@ void FPropertyPathNode::AppendPath(FString& OutPath) const
 
 TSharedPtr<FPropertyPathNode> FPropertyPathNode::FindChild(const FString& InPath) const
 {
-	const TSharedPtr<FPropertyPathNode>* Child = Algo::FindByPredicate(Children, [&InPath](const TSharedPtr<FPropertyPathNode>& ChildNode)
+	for (const TSharedPtr<FPropertyPathNode>& ChildNode : Children)
 	{
-		return ChildNode.IsValid() && ChildNode->GetPropertyByPath(InPath, true);
-	});
-	return Child ? *Child : nullptr;
+		if (TSharedPtr<FPropertyPathNode> FoundNode = ChildNode->GetPropertyByPath(InPath, true))
+		{
+			return FoundNode;
+		}
+	}
+	return nullptr;
 }
