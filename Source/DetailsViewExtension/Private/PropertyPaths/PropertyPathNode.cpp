@@ -56,7 +56,7 @@ TSharedPtr<FPropertyPathNode> FPropertyPathNode::GetPropertyByPath(const FString
 			{
 				return ConstCastSharedRef<FPropertyPathNode>(AsShared());
 			}
-			
+
 			const FString NewPath = InPath.RightChop(PropertyName.Len() + PropertyPathHelpers::Separator().Len());
 			return NewPath.IsEmpty() ? ConstCastSharedRef<FPropertyPathNode>(AsShared()) : FindChild(NewPath);
 		}
@@ -68,9 +68,9 @@ TSharedPtr<FPropertyPathNode> FPropertyPathNode::GetPropertyByPath(const FString
 FString FPropertyPathNode::GetTotalPath() const
 {
 	FString Path = PropertyName;
-	if (Parent.IsValid())
+	if (const TSharedPtr<const FPropertyPathNode> ParentNode = Parent.Pin())
 	{
-		Parent.Pin()->AppendPath(Path);
+		ParentNode->AppendPath(Path);
 	}
 	return Path;
 }
