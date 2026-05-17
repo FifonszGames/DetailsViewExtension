@@ -6,7 +6,8 @@
 
 struct FPropertyPathNode : TSharedFromThis<FPropertyPathNode>
 {
-	void Initialize(const TSharedRef<IPropertyHandle>& SourceHandle, const bool bEditablePropertiesOnly);
+	void Initialize(const TSharedRef<IPropertyHandle>& TypeHandle, const bool bEditablePropertiesOnly);
+	void Initialize(const UStruct& InSourceClass, FString InPropertyName, const bool bEditablePropertiesOnly);
 
 	TArray<TSharedPtr<FPropertyPathNode>> GetChildren(const FString& InFilterString = TEXT("")) const;
 	void FillWithOutmostChildren(TArray<TSharedPtr<FPropertyPathNode>>& OutItems, const bool bIncludeSelf = false);

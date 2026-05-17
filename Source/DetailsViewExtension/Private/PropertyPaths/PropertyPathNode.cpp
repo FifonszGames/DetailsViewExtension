@@ -7,17 +7,22 @@
 #include "PropertyPaths/PropertyPathsHelpers.h"
 
 
-void FPropertyPathNode::Initialize(const TSharedRef<IPropertyHandle>& SourceHandle, const bool bEditablePropertiesOnly)
+void FPropertyPathNode::Initialize(const TSharedRef<IPropertyHandle>& TypeHandle, const bool bEditablePropertiesOnly)
 {
-	bIsEditableProperty = bEditablePropertiesOnly;
 	const UObject* Value = nullptr;
-	SourceHandle->GetValue(Value);
+	TypeHandle->GetValue(Value);
 	if (const UStruct* Class = Cast<UStruct>(Value))
 	{
-		PropertyName = DetailsViewExtensionUtils::GetFieldNameString(*SourceHandle->GetProperty(), true);
-		SourceClass = Class;
-		CreateChildren(*Class, *Class, bEditablePropertiesOnly);
+		Initialize(*Class, DetailsViewExtensionUtils::GetFieldNameString(*TypeHandle->GetProperty(), true), bEditablePropertiesOnly);
 	}
+}
+
+void FPropertyPathNode::Initialize(const UStruct& InSourceClass, FString InPropertyName, const bool bEditablePropertiesOnly)
+{
+	bIsEditableProperty = bEditablePropertiesOnly;
+	PropertyName = MoveTemp(InPropertyName);
+	SourceClass = &InSourceClass;
+	CreateChildren(InSourceClass, InSourceClass, bEditablePropertiesOnly);
 }
 
 TArray<TSharedPtr<FPropertyPathNode>> FPropertyPathNode::GetChildren(const FString& InFilterString) const
