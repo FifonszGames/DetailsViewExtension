@@ -25,6 +25,26 @@ void FPropertyPathNodeSpec::Define()
 			Node->Initialize(*FPropertyPathNodeTestStruct::StaticStruct(), TestPropertyName, true);
 		});
 
+		It("Should return filtered children", [this]
+		{
+			TArray<TSharedPtr<FPropertyPathNode>> EditableChildren = Node->GetChildren();
+			int32 ExpectedChildrenNum = 4;
+			TestEqual("Num of children with empty filter", EditableChildren.Num(), ExpectedChildrenNum);
+
+			EditableChildren = Node->GetChildren(TEXT("editable"));
+			ExpectedChildrenNum = 4;
+			TestEqual("Num of children filtered by: editable", EditableChildren.Num(), ExpectedChildrenNum);
+
+			EditableChildren = Node->GetChildren(TEXT("struct"));
+			ExpectedChildrenNum = 1;
+			TestEqual("Num of children filtered by: struct", EditableChildren.Num(), ExpectedChildrenNum);
+
+			const TSharedPtr<FPropertyPathNode> EditableStructNode = EditableChildren[0];
+			EditableChildren = EditableStructNode->GetChildren(TEXT("name"));
+			ExpectedChildrenNum = 1;
+			TestEqual("Num of children filtered by: name, on child node", EditableChildren.Num(), ExpectedChildrenNum);
+		});
+
 		It("Should return the same name", [this]
 		{
 			TestEqual("Retrieved property name", Node->GetPropertyName(), TestPropertyName);
@@ -54,14 +74,14 @@ void FPropertyPathNodeSpec::Define()
 
 			const TSharedPtr<FPropertyPathNode> IntNode = Node->GetPropertyByPath(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bNonEditableInt));
 			TestFalse("Non-editable int node is valid", IntNode.IsValid());
-			
+
 			const FString EditableStructPropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bEditableStruct);
 			const FString EditableNamePropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeInternalTestStruct, bEditableName);
 			const FString NamePropPath = FString::Join(TArray{EditableStructPropName, EditableNamePropName}, *PropertyPathHelpers::Separator());
 			const TSharedPtr<FPropertyPathNode> NamePropPathNode = Node->GetPropertyByPath(NamePropPath);
 			TestTrue("Editable internal name property node is valid", NamePropPathNode.IsValid());
 		});
-		
+
 		It("Should add outermost children only", [this]
 		{
 			TArray<TSharedPtr<FPropertyPathNode>> OutermostEditableChildren;
