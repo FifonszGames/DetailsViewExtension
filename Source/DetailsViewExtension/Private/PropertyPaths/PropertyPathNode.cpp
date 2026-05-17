@@ -34,6 +34,7 @@ void FPropertyPathNode::FillWithOutmostChildren(TArray<TSharedPtr<FPropertyPathN
 	{
 		OutItems.Add(AsShared());
 	}
+
 	for (const TSharedPtr<FPropertyPathNode>& Child : Children)
 	{
 		Child->FillWithOutmostChildren(OutItems, Child->GetChildren().IsEmpty());
@@ -46,8 +47,13 @@ TSharedPtr<FPropertyPathNode> FPropertyPathNode::GetPropertyByPath(const FString
 	{
 		if (InPath.StartsWith(PropertyName))
 		{
-			const FString NewPath = InPath.LeftChop(InPath.Len() + 1);
-			return NewPath.IsEmpty() ? MakeShared<FPropertyPathNode>(*this) : FindChild(NewPath);
+			if (InPath.Len() == PropertyName.Len())
+			{
+				return ConstCastSharedRef<FPropertyPathNode>(AsShared());
+			}
+			
+			const FString NewPath = InPath.RightChop(PropertyName.Len() + PropertyPathHelpers::Separator().Len());
+			return NewPath.IsEmpty() ? ConstCastSharedRef<FPropertyPathNode>(AsShared()) : FindChild(NewPath);
 		}
 		return nullptr;
 	}
