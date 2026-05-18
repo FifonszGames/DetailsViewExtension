@@ -52,6 +52,8 @@ namespace DetailsViewExtensionUtils
 			inline FName Category() { return TEXT("Category"); }
 			inline FName HideViewOptions() { return TEXT("HideViewOptions"); }
 			inline FName ShowTreeView() { return TEXT("ShowTreeView"); }
+			inline FName Abstract() { return TEXT("Abstract"); }
+			inline FName Hidden() { return TEXT("Hidden"); }
 		}
 	}
 }
