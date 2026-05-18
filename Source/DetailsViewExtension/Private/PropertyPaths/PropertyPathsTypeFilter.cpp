@@ -24,9 +24,10 @@ namespace PropertyPathsTypeFilterUtils
 
 	bool IsClassAllowed(const UStruct* InStruct, const TSharedRef<IPropertyHandle> PropertyPathHandle)
 	{
-		return !InStruct->HasMetaData(DetailsViewExtensionUtils::Get::Meta::Abstract()) &&
-			!InStruct->HasMetaData(DetailsViewExtensionUtils::Get::Meta::Hidden()) &&
-				HasAnyProperties(InStruct, PropertyPathHandle);
+		return InStruct
+		&& !InStruct->HasMetaData(DetailsViewExtensionUtils::Get::Meta::Abstract())
+		&& !InStruct->HasMetaData(DetailsViewExtensionUtils::Get::Meta::Hidden())
+		&& HasAnyProperties(InStruct, PropertyPathHandle);
 	}
 }
 
