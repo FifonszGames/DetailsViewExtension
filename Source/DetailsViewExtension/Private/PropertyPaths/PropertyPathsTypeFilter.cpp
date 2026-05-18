@@ -21,12 +21,20 @@ namespace PropertyPathsTypeFilterUtils
 		});
 		return bHasProperties;
 	}
+
+	bool IsClassAllowed(const UStruct* InStruct, const TSharedRef<IPropertyHandle> PropertyPathHandle)
+	{
+		return InStruct
+		&& !InStruct->HasMetaData(DetailsViewExtensionUtils::Get::Meta::Abstract())
+		&& !InStruct->HasMetaData(DetailsViewExtensionUtils::Get::Meta::Hidden())
+		&& HasAnyProperties(InStruct, PropertyPathHandle);
+	}
 }
 
 bool FPropertyPathsTypeFilter::IsClassAllowed(const FClassViewerInitializationOptions& InInitOptions,
 	const UClass* InClass, TSharedRef<FClassViewerFilterFuncs> InFilterFuncs)
 {
-	return PropertyPathsTypeFilterUtils::HasAnyProperties(InClass, PropertyPathHandle);
+	return PropertyPathsTypeFilterUtils::IsClassAllowed(InClass, PropertyPathHandle);
 }
 
 bool FPropertyPathsTypeFilter::IsUnloadedClassAllowed(const FClassViewerInitializationOptions& InInitOptions, const TSharedRef<const IUnloadedBlueprintData> InUnloadedClassData, TSharedRef<FClassViewerFilterFuncs> InFilterFuncs)
@@ -37,5 +45,5 @@ bool FPropertyPathsTypeFilter::IsUnloadedClassAllowed(const FClassViewerInitiali
 bool FPropertyPathsStructFilter::IsStructAllowed(const FStructViewerInitializationOptions& InInitOptions,
 	const UScriptStruct* InStruct, TSharedRef<FStructViewerFilterFuncs> InFilterFuncs)
 {
-	return !InStruct->IsStructTrashed() && PropertyPathsTypeFilterUtils::HasAnyProperties(InStruct, PropertyPathHandle);
+	return !InStruct->IsStructTrashed() && PropertyPathsTypeFilterUtils::IsClassAllowed(InStruct, PropertyPathHandle);
 }
