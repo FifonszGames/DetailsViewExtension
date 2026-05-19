@@ -54,7 +54,7 @@ void FPropertyPathNodeSpec::Define()
 		{
 			TestTrue("Self filter", Node->PassesFilter(TestPropertyName));
 			TestTrue("Filter of child", Node->PassesFilter(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bEditableBool)));
-			TestFalse("Filter of no editable child", Node->PassesFilter(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bNonEditableInt)));
+			TestFalse("Filter of no editable child", Node->PassesFilter(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, NonEditableInt)));
 		});
 
 		It("Should return correct total path", [this]
@@ -69,16 +69,16 @@ void FPropertyPathNodeSpec::Define()
 
 		It("Should return correct node by path", [this]
 		{
-			const TSharedPtr<FPropertyPathNode> ArrayNode = Node->GetPropertyByPath(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bEditableIntArray));
+			const TSharedPtr<const FPropertyPathNode> ArrayNode = Node->GetPropertyByPath(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, EditableIntArray));
 			TestTrue("Editable Array property node is valid", ArrayNode.IsValid());
 
-			const TSharedPtr<FPropertyPathNode> IntNode = Node->GetPropertyByPath(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bNonEditableInt));
+			const TSharedPtr<const FPropertyPathNode> IntNode = Node->GetPropertyByPath(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, NonEditableInt));
 			TestFalse("Non-editable int node is valid", IntNode.IsValid());
 
-			const FString EditableStructPropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bEditableStruct);
-			const FString EditableNamePropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeInternalTestStruct, bEditableName);
+			const FString EditableStructPropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, EditableStruct);
+			const FString EditableNamePropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeInternalTestStruct, EditableName);
 			const FString NamePropPath = FString::Join(TArray{EditableStructPropName, EditableNamePropName}, *PropertyPathHelpers::Separator());
-			const TSharedPtr<FPropertyPathNode> NamePropPathNode = Node->GetPropertyByPath(NamePropPath);
+			const TSharedPtr<const FPropertyPathNode> NamePropPathNode = Node->GetPropertyByPath(NamePropPath);
 			TestTrue("Editable internal name property node is valid", NamePropPathNode.IsValid());
 		});
 
@@ -120,12 +120,12 @@ void FPropertyPathNodeSpec::Define()
 
 		It("Should pass filters", [this]
 		{
-			TestTrue("Filter of non-editable child", Node->PassesFilter(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bNonEditableInt)));
+			TestTrue("Filter of non-editable child", Node->PassesFilter(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, NonEditableInt)));
 		});
 
 		It("Should return correct total path", [this]
 		{
-			const FString NonEditableIntName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bNonEditableInt);
+			const FString NonEditableIntName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, NonEditableInt);
 			const TArray<TSharedPtr<FPropertyPathNode>> Children = Node->GetChildren(NonEditableIntName);
 			const TSharedPtr<FPropertyPathNode> NonEditableIntNode = Children[0];
 
@@ -135,13 +135,13 @@ void FPropertyPathNodeSpec::Define()
 
 		It("Should return correct node by path", [this]
 		{
-			const TSharedPtr<FPropertyPathNode> IntNode = Node->GetPropertyByPath(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bNonEditableInt));
-			TestTrue("Non-editable int node is valid", IntNode.IsValid());
+			const TSharedPtr<const FPropertyPathNode> IntNode = Node->GetPropertyByPath(GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, NonEditableInt));
+			TestTrue("Non-const editable int node is valid", IntNode.IsValid());
 
-			const FString EditableStructPropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, bEditableStruct);
-			const FString NonEditableNamePropFloat = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeInternalTestStruct, bNonEditableFloat);
+			const FString EditableStructPropName = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeTestStruct, EditableStruct);
+			const FString NonEditableNamePropFloat = GET_MEMBER_NAME_STRING_CHECKED(FPropertyPathNodeInternalTestStruct, NonEditableFloat);
 			const FString FloatPropPath = FString::Join(TArray{EditableStructPropName, NonEditableNamePropFloat}, *PropertyPathHelpers::Separator());
-			const TSharedPtr<FPropertyPathNode> FloatPropPathNode = Node->GetPropertyByPath(FloatPropPath);
+			const TSharedPtr<const FPropertyPathNode> FloatPropPathNode = Node->GetPropertyByPath(FloatPropPath);
 			TestTrue("Non-editable internal float property node is valid", FloatPropPathNode.IsValid());
 		});
 

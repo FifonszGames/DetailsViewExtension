@@ -46,7 +46,7 @@ void FPropertyPathNode::FillWithOutermostChildren(TArray<TSharedPtr<FPropertyPat
 	}
 }
 
-TSharedPtr<FPropertyPathNode> FPropertyPathNode::GetPropertyByPath(const FString& InPath, const bool bInCountSelf) const
+TSharedPtr<const FPropertyPathNode> FPropertyPathNode::GetPropertyByPath(const FString& InPath, const bool bInCountSelf) const
 {
 	if (bInCountSelf)
 	{
@@ -54,11 +54,11 @@ TSharedPtr<FPropertyPathNode> FPropertyPathNode::GetPropertyByPath(const FString
 		{
 			if (InPath.Len() == PropertyName.Len())
 			{
-				return ConstCastSharedRef<FPropertyPathNode>(AsShared());
+				return AsShared();
 			}
 
 			const FString NewPath = InPath.RightChop(PropertyName.Len() + PropertyPathHelpers::Separator().Len());
-			return NewPath.IsEmpty() ? ConstCastSharedRef<FPropertyPathNode>(AsShared()) : FindChild(NewPath);
+			return NewPath.IsEmpty() ? AsShared() : FindChild(NewPath);
 		}
 		return nullptr;
 	}
@@ -140,11 +140,11 @@ void FPropertyPathNode::AppendPath(FString& OutPath) const
 	}
 }
 
-TSharedPtr<FPropertyPathNode> FPropertyPathNode::FindChild(const FString& InPath) const
+TSharedPtr<const FPropertyPathNode> FPropertyPathNode::FindChild(const FString& InPath) const
 {
 	for (const TSharedPtr<FPropertyPathNode>& ChildNode : Children)
 	{
-		if (TSharedPtr<FPropertyPathNode> FoundNode = ChildNode->GetPropertyByPath(InPath, true))
+		if (TSharedPtr<const FPropertyPathNode> FoundNode = ChildNode->GetPropertyByPath(InPath, true))
 		{
 			return FoundNode;
 		}
