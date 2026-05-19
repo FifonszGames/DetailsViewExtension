@@ -11,35 +11,35 @@
 void SVisiblePropertyPathsCombo::Construct(const FArguments& InArgs)
 {
 	PropertyHandle = InArgs._PropertyHandle;
-	
+
 	if (!PropertyHandle.IsValid())
 	{
 		SetupInvalidChildSlot();
 		return;
 	}
-	
-	TSharedPtr<IPropertyHandle> ClassPropHandle = PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetClassPropertyName());
+
+	const TSharedPtr<IPropertyHandle> ClassPropHandle = PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetClassPropertyName());
 	PropertyHandle->SetOnChildPropertyValueChangedWithData(TDelegate<void(const FPropertyChangedEvent&)>::CreateSP(this, &SVisiblePropertyPathsCombo::OnPropertyValueChanged));
 	PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetEditablePropertiesOnlyName())->GetValue(bEditablePropertiesOnly);
 	InitializeParentNode(ClassPropHandle.ToSharedRef());
-	
+
 	CreateSelectedPropertyPathsList();
 
 	TWeakPtr<SVisiblePropertyPathsCombo> WeakSelf = StaticCastWeakPtr<SVisiblePropertyPathsCombo>(AsWeak());
-	
+
 	constexpr int32 ItemHeight = 24.f;
-	
+
 	PropertyPathsListView = SNew(SListView<TSharedPtr<FString>>)
 		.ListItemsSource(&SelectedPropertyPaths)
 		.SelectionMode(ESelectionMode::None)
 		.ListViewStyle(&FAppStyle::Get().GetWidgetStyle<FTableViewStyle>("SimpleListView"))
 		.Visibility(SelectedPropertyPaths.IsEmpty() ? EVisibility::Collapsed : EVisibility::Visible)
 		.OnGenerateRow(this, &SVisiblePropertyPathsCombo::MakePropertyPathListViewRow);
-	
+
 	ChildSlot
 	[
 		SNew(SHorizontalBox)
-							
+
 		+ SHorizontalBox::Slot()
 		.AutoWidth()
 		.VAlign(VAlign_Top)
@@ -55,10 +55,10 @@ void SVisiblePropertyPathsCombo::Construct(const FArguments& InArgs)
 			.ButtonContent()
 			[
 				SNew(SBox)
-				.MaxDesiredHeight(ItemHeight*5)
+				.MaxDesiredHeight(ItemHeight * 5)
 				[
 					SNew(SBorder)
-					.Padding(FMargin(6,2))
+					.Padding(FMargin(6, 2))
 					[
 						PropertyPathsListView.ToSharedRef()
 					]
@@ -86,7 +86,7 @@ void SVisiblePropertyPathsCombo::SetupInvalidChildSlot()
 void SVisiblePropertyPathsCombo::CreateSelectedPropertyPathsList()
 {
 	SelectedPropertyPaths.Empty();
-	if(const FVisiblePropertyPaths* StructPaths = PropertyPathHelpers::GetPathsFromHandle(PropertyHandle))
+	if (const FVisiblePropertyPaths* StructPaths = PropertyPathHelpers::GetPathsFromHandle(PropertyHandle))
 	{
 		Algo::Transform(StructPaths->GetPaths(), SelectedPropertyPaths, [](const FString& Path) { return MakeShared<FString>(Path); });
 	}
@@ -100,23 +100,23 @@ void SVisiblePropertyPathsCombo::InitializeParentNode(const TSharedRef<IProperty
 
 void SVisiblePropertyPathsCombo::InitializeParentNode()
 {
-	TSharedPtr<IPropertyHandle> ClassPropHandle = PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetClassPropertyName());
+	const TSharedPtr<IPropertyHandle> ClassPropHandle = PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetClassPropertyName());
 	InitializeParentNode(ClassPropHandle.ToSharedRef());
 }
 
 EPropertyPathChipState SVisiblePropertyPathsCombo::GetChipState(const FString& InForPath) const
 {
-	TSharedPtr<FPropertyPathNode> PropertyNode = ParentNode->GetPropertyByPath(*InForPath);
+	const TSharedPtr<const FPropertyPathNode> PropertyNode = ParentNode->GetPropertyByPath(*InForPath);
 	return PropertyNode.IsValid() ? EPropertyPathChipState::Valid : EPropertyPathChipState::Invalid;
 }
 
 TSharedRef<ITableRow> SVisiblePropertyPathsCombo::MakePropertyPathListViewRow(TSharedPtr<FString> Item, const TSharedRef<STableViewBase>& TableViewBase)
 {
 	const EPropertyPathChipState State = GetChipState(*Item);
-	
+
 	return SNew(STableRow<TSharedPtr<FString>>, TableViewBase)
 		.Style(&FAppStyle::Get().GetWidgetStyle<FTableRowStyle>("SimpleTableView.Row"))
-		.Padding(FMargin(0,2))
+		.Padding(FMargin(0, 2))
 		[
 			SNew(SPropertyPathChip)
 			.ChipText(FText::FromString(*Item))
@@ -129,15 +129,15 @@ TSharedRef<SWidget> SVisiblePropertyPathsCombo::OnGetMenuContent()
 {
 	TagPicker = SNew(SPropertyPathsPicker)
 		.MaxHeight(400.0f)
-		.Padding(FMargin(2,0,2,0))
+		.Padding(FMargin(2, 0, 2, 0))
 		.PropertyHandle(PropertyHandle)
 		.ParentNode(ParentNode);
 
-	if (TSharedPtr<SWidget> WidgetToFocus = TagPicker->GetWidgetToFocusOnOpen())
+	if (const TSharedPtr<SWidget> WidgetToFocus = TagPicker->GetWidgetToFocusOnOpen())
 	{
 		ComboButton->SetMenuContentWidgetToFocus(WidgetToFocus);
 	}
-	
+
 	return TagPicker.ToSharedRef();
 }
 
@@ -158,11 +158,11 @@ bool SVisiblePropertyPathsCombo::IsValueEnabled() const
 
 void SVisiblePropertyPathsCombo::OnPropertyValueChanged(const FPropertyChangedEvent& InEvent)
 {
-	if(FVisiblePropertyPaths::GetPathsPropertyName() == InEvent.GetPropertyName())
+	if (FVisiblePropertyPaths::GetPathsPropertyName() == InEvent.GetPropertyName())
 	{
-		if(const FVisiblePropertyPaths* StructPaths = PropertyPathHelpers::GetPathsFromHandle(PropertyHandle))
+		if (const FVisiblePropertyPaths* StructPaths = PropertyPathHelpers::GetPathsFromHandle(PropertyHandle))
 		{
-			if(!StructPaths->GetPaths().IsEmpty() && StructPaths->GetPaths().Last().IsEmpty())
+			if (!StructPaths->GetPaths().IsEmpty() && StructPaths->GetPaths().Last().IsEmpty())
 			{
 				return;
 			}
@@ -172,16 +172,16 @@ void SVisiblePropertyPathsCombo::OnPropertyValueChanged(const FPropertyChangedEv
 			PropertyPathsListView->SetVisibility(SelectedPropertyPaths.IsEmpty() ? EVisibility::Collapsed : EVisibility::Visible);
 		}
 	}
-	else if(FVisiblePropertyPaths::GetEditablePropertiesOnlyName() == InEvent.GetPropertyName())
+	else if (FVisiblePropertyPaths::GetEditablePropertiesOnlyName() == InEvent.GetPropertyName())
 	{
 		PropertyHandle->GetChildHandle(FVisiblePropertyPaths::GetEditablePropertiesOnlyName())->GetValue(bEditablePropertiesOnly);
-		if(ParentNode->IsEditableProperty() != bEditablePropertiesOnly)
+		if (ParentNode->IsEditableProperty() != bEditablePropertiesOnly)
 		{
 			InitializeParentNode();
 			PropertyPathsListView->RebuildList();
 		}
 	}
-	else if(FVisiblePropertyPaths::GetClassPropertyName() == InEvent.GetPropertyName())
+	else if (FVisiblePropertyPaths::GetClassPropertyName() == InEvent.GetPropertyName())
 	{
 		InitializeParentNode();
 		PropertyPathsListView->RebuildList();

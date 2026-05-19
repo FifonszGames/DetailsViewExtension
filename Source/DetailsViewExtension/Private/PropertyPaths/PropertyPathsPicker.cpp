@@ -19,7 +19,6 @@ void SPropertyPathsPicker::Construct(const FArguments& InArgs)
 	}
 	PropertyHandle = InArgs._PropertyHandle;
 	ParentNode = InArgs._ParentNode;
-	PropertyHandle = InArgs._PropertyHandle;
 	MaxHeight = InArgs._MaxHeight;
 
 	FillAllPathItems();

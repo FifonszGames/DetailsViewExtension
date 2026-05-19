@@ -6,12 +6,13 @@
 
 struct FPropertyPathNode : TSharedFromThis<FPropertyPathNode>
 {
-	void Initialize(const TSharedRef<IPropertyHandle>& SourceHandle, const bool bEditablePropertiesOnly);
+	void Initialize(const TSharedRef<IPropertyHandle>& TypeHandle, const bool bEditablePropertiesOnly);
+	void Initialize(const UStruct& InSourceClass, FString InPropertyName, const bool bEditablePropertiesOnly);
 
 	TArray<TSharedPtr<FPropertyPathNode>> GetChildren(const FString& InFilterString = TEXT("")) const;
-	void FillWithOutmostChildren(TArray<TSharedPtr<FPropertyPathNode>>& OutItems, const bool bIncludeSelf = false);
+	void FillWithOutermostChildren(TArray<TSharedPtr<FPropertyPathNode>>& OutItems, const bool bIncludeSelf = false);
 
-	TSharedPtr<FPropertyPathNode> GetPropertyByPath(const FString& InPath, const bool bInCountSelf = false) const;
+	TSharedPtr<const FPropertyPathNode> GetPropertyByPath(const FString& InPath, const bool bInCountSelf = false) const;
 	FString GetTotalPath() const;
 	const FString& GetPropertyName() const { return PropertyName; }
 
@@ -25,7 +26,7 @@ private:
 	void CreateChildren(const UStruct& InOutMostParentClass, const UStruct& InFromClass, const bool bInEditablePropertiesOnly);
 
 	void AppendPath(FString& OutPath) const;
-	TSharedPtr<FPropertyPathNode> FindChild(const FString& InPath) const;
+	TSharedPtr<const FPropertyPathNode> FindChild(const FString& InPath) const;
 
 	FString PropertyName;
 	TArray<TSharedPtr<FPropertyPathNode>> Children;
